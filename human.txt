@@ -1,0 +1,49 @@
+$Info
+#Regular Name
+Human
+
+#Scientific Name
+Homo sapiens
+
+#Dangerous
+Yes
+
+#Description
+The species that you and all other living human beings on this planet belong to is Homo sapiens. During a time of dramatic climate change 200,000 years ago, Homo sapiens (modern humans) evolved in Africa. Like other early humans that were living at this time, they gathered and hunted food, and evolved behaviors that helped them respond to the challenges of survival in unstable environments.
+
+#Body Length
+0.152 - 1.84m
+
+#Weight
+3.18 - 68.8 kg
+
+#Elevtion
+0 - 2,750m
+
+#Habitat
+Around the world
+
+#Feeds On
+Everything
+
+#First Apperance
+200,000 years ago
+
+$Images
+http://media.eol.org/content/2012/06/12/20/98581_orig.jpg
+http://media.eol.org/content/2012/06/12/20/31358_orig.jpg
+http://media.eol.org/content/2012/06/12/20/81899_orig.jpg
+http://media.eol.org/content/2012/06/12/20/76095_orig.jpg
+http://media.eol.org/content/2012/06/12/20/21474_orig.jpg
+http://media.eol.org/content/2012/11/13/02/66039_orig.jpg
+
+$Videos
+https://www.youtube.com/watch?v=YBp3SHp_Mwo
+https://www.youtube.com/watch?v=SwUY7IZNPgA
+https://www.youtube.com/watch?v=VrLRaF6HeMg
+
+
+$Resources
+http://eol.org/pages/327955/overview
+http://en.wikipedia.org/wiki/Human
+https://www.youtube.com/watch?v=YBp3SHp_Mwo

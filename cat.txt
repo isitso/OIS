@@ -1,0 +1,52 @@
+$Info
+#Regular Name
+Cat
+
+#Scientific Name
+Felidae
+
+#Dangerous
+Yes
+
+#Description
+With the exception of Antarctica, Australia, New Zealand, Madagascar, Japan, and most oceanic islands, native populations of cats are found worldwide, and one species, domestic cats, have been introduced nearly everywhere humans currently exist. Although some authorities recognize only a few genera, most accounts of Felidae recognize 18 genera and 36 species. With the exception of the largest cats, most are adept climbers, and many are skilled swimmers. Most felids are solitary. Often, felids are separated into two distinct subgroups, large cats and small cats. Generally, small cats are those that, due to a hardening of the hyoid bone, have an inability to roar. Felidae consists of 2 subfamilies, Pantherinae (e.g., lions and tigers) and Felinae (e.g., bobcats, pumas, and cheetahs).
+
+#Body Length
+0.152 - 1.84m
+
+#Weight
+0.555 - 175.0 kg
+
+#Elevation
+4.4 - 1,366.3m
+
+#Habitat
+Blank
+
+#Feeds On
+Chousingha
+Deer Mouse
+Forest Rabbit
+
+#First Appearance
+33.3 million years ago
+
+$Images
+http://media.eol.org/content/2014/08/28/14/06197_580_360.jpg
+http://media.eol.org/content/2014/05/13/16/49570_orig.jpg
+http://media.eol.org/content/2009/09/15/21/43106_orig.jpg
+http://media.eol.org/content/2012/06/15/04/59328_orig.jpg
+http://media.eol.org/content/2012/06/15/02/24072_orig.jpg
+http://media.eol.org/content/2014/02/26/19/51370_orig.jpg
+
+
+$Videos
+https://www.youtube.com/watch?v=yMdaObHPqbQ
+https://www.youtube.com/watch?v=BpVel6A7HhM
+https://www.youtube.com/watch?v=sNpQwcUuc-k
+
+$Resources
+http://en.wikipedia.org/wiki/Cat
+https://www.youtube.com/watch?v=GZIpevZbBvc
+http://eol.org/pages/7674/overview
+
