@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,6 +14,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import javax.xml.ws.handler.MessageContext.Scope;
 
 public class OISGUI extends JFrame implements ActionListener {
 	// Application's attributes
@@ -34,11 +36,11 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static String[] TABBED_PANE_CAPTION = { "INFO", "IMAGES",
 			"VIDEOS", "RESOURCES" };
 	private OISButton resultButton;
-	private JEditorPane infoPane;
+	private JEditorPane infoPane, imagePane;
 	private JPanel resultView;
-	private HTMLEditorKit kit;
-	private StyleSheet styleSheet;
-	private Document doc;
+	private HTMLEditorKit[] kits;
+	private StyleSheet[] styleSheets;
+	private Document[] docs;
 	private JTabbedPane tabbedPane;
 	private JScrollPane[] scrollPanes;
 
@@ -93,8 +95,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Information pane
 		scrollPanes = new JScrollPane[TABBED_PANE_NUMBERS];
 		prepareInfoPane(oName);
-		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
-		for (int i = 1; i < TABBED_PANE_NUMBERS; i++)
+		for (int i = 2; i < TABBED_PANE_NUMBERS; i++)
 			scrollPanes[i] = new JScrollPane(new JPanel());
 		for (int i = 0; i < TABBED_PANE_NUMBERS; i++) {
 			tabbedPane.add(TABBED_PANE_CAPTION[i], scrollPanes[i]);
@@ -102,7 +103,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		resultButton = new OISButton("BACK");
 		resultView.add(tabbedPane, BorderLayout.CENTER);
 		resultView.add(resultButton, BorderLayout.SOUTH);
-		
+
 		// resultView button
 		resultButton.addActionListener(this);
 	}
@@ -123,7 +124,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
 			System.out.println("Hello from button "
 					+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
-		} else if (e.getSource() == resultButton){
+		} else if (e.getSource() == resultButton) {
 			System.out.println("Hello from resultView buttotn");
 			remove(resultView);
 			add(mainView);
@@ -209,34 +210,79 @@ public class OISGUI extends JFrame implements ActionListener {
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();
 		infoPane.setEditable(false);
-		kit = new HTMLEditorKit();
-		infoPane.setEditorKit(kit);
-		// add some styles to the html
-		styleSheet = kit.getStyleSheet();
-		styleSheet
-				.addRule("body {color:#000; font-family:times; margin: 4px; }");
-		styleSheet.addRule("h1 {color: blue;}");
-		styleSheet.addRule("h2 {color: #ff0000;}");
-		styleSheet
-				.addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
+		kits = new HTMLEditorKit[2];
+		styleSheets = new StyleSheet[2];
+		docs = new Document[2];
+		for (int i = 0; i < 2; i++){
+			kits[i] = new HTMLEditorKit();
+			// add some styles to the html
+			styleSheets[i] = kits[INFO_TAB_ID].getStyleSheet();
+			styleSheets[i].addRule("body {color:#000; font-family:times; margin: 4px; }");
+			styleSheets[i].addRule("h1 {color: blue;}");
+			styleSheets[i].addRule("h2 {color: #ff0000;}");
+			styleSheets[i].addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
+			// create a document, set it on the jeditorpane, then add the html
+			docs[i] = kits[i].createDefaultDocument();
+		}
+		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
 		String fileName = oName + ".txt";
 		String photoName = oName + ".jpg";
 
+		// Get information of organism from text file
 		String str = readFile(fileName);
 		String info = getInfo(str);
+
+		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
 		String htmlString = "<html>\n"
 				+ "<head><link rel='stylesheet' href='style.css'>\n"
 				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
 				+ "<body>\n" + "<img src='file:" + photoName + "' alt='"
 				+ photoName + "' height='177' width='248'>" + "<p>" + info
-				+ "</p>" + "<br><br>" + "</body>\n";
+				+ "</p>" + "<br><br>" + "</body>\n</html>";
 
-		// create a document, set it on the jeditorpane, then add the html
-		doc = kit.createDefaultDocument();
-
-		infoPane.setDocument(doc);
+		infoPane.setDocument(docs[INFO_TAB_ID]);
 		infoPane.setText(htmlString);
+
+		// Image pane
+		// create some simple html as a string
+		htmlString = "<html>\n"
+				+ "<head><link rel='stylesheet' href='style.css'>\n"
+				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
+				+ "<body>\n" + "<table align='center'>\n";
+
+		if (getImgLinks(str) != null) {
+			int index = 0;
+			for (int i = 0; i < getImgLinks(str).size(); i++) {
+				if (i == 0 || (i % 2) == 0) {
+					htmlString += "<tr><td>\n" + "<img src='"
+							+ getImgLinks(str).get(i) + "' alt='"
+							+ getImgLinks(str).get(i)
+							+ "' height='177' width='220'>" + "</td>\n";
+				} else {
+					htmlString += "<td>\n" + "<img src='"
+							+ getImgLinks(str).get(i) + "' alt='"
+							+ getImgLinks(str).get(i)
+							+ "' height='177' width='220'>" + "</td></tr>\n";
+				}
+				index = i;
+			}
+
+			if ((index % 2) != 0) {
+				htmlString += "</tr>\n";
+			}
+		}
+		htmlString += "</table>\n" + "</body>\n</html>";
+		
+		imagePane = new JEditorPane();
+		imagePane.setEditable(false);
+		imagePane.setEditorKit(kits[IMAGE_TAB_ID]);
+		imagePane.setDocument(docs[IMAGE_TAB_ID]);
+		imagePane.setText(htmlString);		
+
+		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
+		scrollPanes[IMAGE_TAB_ID] = new JScrollPane(imagePane);
 	}
+
 }
