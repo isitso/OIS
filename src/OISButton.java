@@ -4,6 +4,10 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+/*	Customed JButton: Default Color and Font
+ * 					Has String variable to hold the url,
+ * 					which is used to open web browser
+ */
 
 public class OISButton extends JButton{
 	private final static int COLOR_R = 000;

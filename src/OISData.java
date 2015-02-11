@@ -5,6 +5,9 @@ import java.util.ArrayList;
 // This class hold data from text file
 // Such as: information, image links, video links, resource links
 // Each part begins with '$'
+// To use this class: need to have a valid organism name (oName),
+// 					call update() to let it read text file again,
+//					or use constructor with String parameter
 
 public class OISData {
 	public static final String INFO_START_TOKEN = "$Info";
@@ -26,9 +29,13 @@ public class OISData {
 		readFile(oName + ".txt");
 	}
 	
+	// Update content of the class using readFile() & oName - organism name
+	public void update(){
+		readFile(oName + "txt");
+	}
 	// Read txt file and return a String contains everything thing inside that
 	// file
-	public void readFile(String fileName) {
+	private void readFile(String fileName) {
 		String str = "", line = "";
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));

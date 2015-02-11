@@ -18,6 +18,11 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+/*	OISGUI: There will be mainView and resultView
+ * 	mainView contains main buttons that let user capture, open image, and about the app
+ * 	resultView contains information of the organism: info, images, videos, and resource links
+ * 	resultView will need to use OISData object to get data from text file
+ */
 public class OISGUI extends JFrame implements ActionListener {
 	// Application's attributes
 	private final static String OIS_TITLE = "ORGANISM IDENTIFICATION SYSTEM - OIS";
