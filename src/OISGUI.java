@@ -1,9 +1,15 @@
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JEditorPane;
@@ -35,9 +41,9 @@ public class OISGUI extends JFrame implements ActionListener {
 	// Result frame's components
 	private final static String[] TABBED_PANE_CAPTION = { "INFO", "IMAGES",
 			"VIDEOS", "RESOURCES" };
-	private OISButton resultButton;
+	private OISButton resultButton, resourceButtons[], videoButtons[];
 	private JEditorPane infoPane, imagePane;
-	private JPanel resultView;
+	private JPanel resultView, resourcePane, videoPane;
 	private HTMLEditorKit[] kits;
 	private StyleSheet[] styleSheets;
 	private Document[] docs;
@@ -49,7 +55,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	public static final int INFO_TAB_ID = 0;
 	public static final int IMAGE_TAB_ID = 1;
 	public static final int VIDEO_TAB_ID = 2;
-	public static final int RESOURCE_TAB_ID = 4;
+	public static final int RESOURCE_TAB_ID = 3;
 
 	public static final String INFO_START_TOKEN = "$Info";
 	public static final String IMAGE_START_TOKEN = "$Image";
@@ -95,8 +101,8 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Information pane
 		scrollPanes = new JScrollPane[TABBED_PANE_NUMBERS];
 		prepareInfoPane(oName);
-		for (int i = 2; i < TABBED_PANE_NUMBERS; i++)
-			scrollPanes[i] = new JScrollPane(new JPanel());
+		//for (int i = 2; i < TABBED_PANE_NUMBERS; i++)
+		//	scrollPanes[i] = new JScrollPane(new JPanel());
 		for (int i = 0; i < TABBED_PANE_NUMBERS; i++) {
 			tabbedPane.add(TABBED_PANE_CAPTION[i], scrollPanes[i]);
 		}
@@ -106,6 +112,8 @@ public class OISGUI extends JFrame implements ActionListener {
 
 		// resultView button
 		resultButton.addActionListener(this);
+		for (int i = 0; i < resourceButtons.length; i++) {
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -213,14 +221,16 @@ public class OISGUI extends JFrame implements ActionListener {
 		kits = new HTMLEditorKit[2];
 		styleSheets = new StyleSheet[2];
 		docs = new Document[2];
-		for (int i = 0; i < 2; i++){
+		for (int i = 0; i < 2; i++) {
 			kits[i] = new HTMLEditorKit();
 			// add some styles to the html
 			styleSheets[i] = kits[INFO_TAB_ID].getStyleSheet();
-			styleSheets[i].addRule("body {color:#000; font-family:times; margin: 4px; }");
+			styleSheets[i]
+					.addRule("body {color:#000; font-family:times; margin: 4px; }");
 			styleSheets[i].addRule("h1 {color: blue;}");
 			styleSheets[i].addRule("h2 {color: #ff0000;}");
-			styleSheets[i].addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
+			styleSheets[i]
+					.addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
 			// create a document, set it on the jeditorpane, then add the html
 			docs[i] = kits[i].createDefaultDocument();
 		}
@@ -274,15 +284,89 @@ public class OISGUI extends JFrame implements ActionListener {
 			}
 		}
 		htmlString += "</table>\n" + "</body>\n</html>";
-		
+
 		imagePane = new JEditorPane();
 		imagePane.setEditable(false);
 		imagePane.setEditorKit(kits[IMAGE_TAB_ID]);
 		imagePane.setDocument(docs[IMAGE_TAB_ID]);
-		imagePane.setText(htmlString);		
+		imagePane.setText(htmlString);
 
 		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
 		scrollPanes[IMAGE_TAB_ID] = new JScrollPane(imagePane);
+		scrollPanes[RESOURCE_TAB_ID] = new JScrollPane(prepareResourcePane(str));
+		scrollPanes[VIDEO_TAB_ID] = new JScrollPane(prepareVideoPane(str));
 	}
 
+	public JPanel prepareResourcePane(String string) {
+		resourcePane = new JPanel();
+		ArrayList<String> list = getResources(string);
+		if (list != null) {
+			resourcePane.setLayout(new GridLayout(list.size(), 1));
+			resourceButtons = new OISButton[list.size()];
+
+			for (int i = 0; i < list.size(); i++) {
+				resourceButtons[i] = new OISButton(list.get(i));
+        		resourceButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
+				resourceButtons[i].addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent event) {
+						OISButton b = (OISButton) event.getSource();
+						try {
+							openWebpage(new URI(b.getText()));
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				);
+				resourcePane.add(resourceButtons[i]);
+			}
+		}
+		return resourcePane;
+	}
+	public JPanel prepareVideoPane(String string){
+		ArrayList<String> list = getVideoLinks(string);
+        videoPane = new JPanel();
+        videoButtons = new OISButton[list.size()];        
+        
+        if(list != null)
+        {        	
+            videoPane.setLayout(new GridLayout(list.size(), 1));
+
+        	for(int i =0; i < list.size(); i++ )
+        	{
+        		videoButtons[i]= new OISButton(list.get(i));
+        		videoButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
+        		videoButtons[i].addActionListener(new ActionListener(){					
+					@Override
+					public void actionPerformed(ActionEvent event) {
+        			       	OISButton b = (OISButton)event.getSource();
+        			       	try {
+        			       		openWebpage(new URI(b.getText()));        							
+        						} catch (Exception e) {
+        							e.printStackTrace();
+        						}
+        				 }        				
+        		}        				
+        				);
+        		
+                videoPane.add(videoButtons[i]);
+        	}
+        }         
+        return videoPane;
+    }
+	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
+
+	public static void openWebpage(URI url) {
+		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
+				: null;
+		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+			try {
+				desktop.browse(url);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
