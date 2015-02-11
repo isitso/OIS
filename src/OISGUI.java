@@ -5,8 +5,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -47,19 +45,14 @@ public class OISGUI extends JFrame implements ActionListener {
 	private Document[] docs;
 	private JTabbedPane tabbedPane;
 	private JScrollPane[] scrollPanes;
-
+	private OISData data;
+	
 	// Number of tabs
 	public static final int TABBED_PANE_NUMBERS = 4;
 	public static final int INFO_TAB_ID = 0;
 	public static final int IMAGE_TAB_ID = 1;
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
-
-	public static final String INFO_START_TOKEN = "$Info";
-	public static final String IMAGE_START_TOKEN = "$Image";
-	public static final String VIDEO_START_TOKEN = "$Video";
-	public static final String RESOURCE_START_TOKEN = "$Resource";
-	public static final String PART_END_TOKEN = "$";
 
 	public OISGUI() {
 		// Create app frame
@@ -93,7 +86,8 @@ public class OISGUI extends JFrame implements ActionListener {
 		resultView = new JPanel();
 		resultView.setLayout(new BorderLayout());
 		resultView.setBorder(BorderFactory.createEmptyBorder());
-
+		data = new OISData(oName);
+		
 		// Tabbed pane
 		tabbedPane = new JTabbedPane();
 		// Information pane
@@ -139,80 +133,6 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 	}
 
-	// Read txt file and return a String contains everything thing inside that
-	// file
-	public static String readFile(String fileName) {
-		String str = "", line = "";
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
-			while ((line = br.readLine()) != null)
-				str += line + "\n";
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return str;
-	}
-
-	// Extract info part from a String that starts with $Info and ends when
-	// another $ is found or end of file
-	public String getInfo(String str) {
-		ArrayList<String> lines = getPart(str, INFO_START_TOKEN, PART_END_TOKEN);
-		String result = "";
-		for (String line : lines)
-			if (line.isEmpty()) {
-				result += "<br>";
-			} else {
-				if (line.startsWith("#"))
-					line = "<h2>" + line.substring(1) + "</h2>";
-				result += line;
-			}
-		return result;
-	}
-
-	// Extract image links from a String that starts with $Image and ends when
-	// another $ is found or end of file
-	public ArrayList<String> getImgLinks(String str) {
-		return getPart(str, IMAGE_START_TOKEN, PART_END_TOKEN);
-	}
-
-	// Extract video links from a String that starts with $Videos and ends when
-	// another $ is found or end of file
-	public ArrayList<String> getVideoLinks(String str) {
-		return getPart(str, VIDEO_START_TOKEN, PART_END_TOKEN);
-	}
-
-	// Extrace resource links from a String that starts with $Resource and ends
-	// when other $ is found or end of file
-	public ArrayList<String> getResources(String str) {
-		return getPart(str, RESOURCE_START_TOKEN, PART_END_TOKEN);
-	}
-
-	public ArrayList<String> getPart(String str, String startToken,
-			String endToken) {
-		// splits into multiple lines and store into array
-		String[] lines = str.split("\n");
-		ArrayList<String> result = new ArrayList<String>();
-		boolean isFound = false;
-		for (String line : lines) {
-			// find the token
-			line = line.trim();
-			if (!isFound && !line.isEmpty()) {
-				if (line.startsWith(startToken))
-					isFound = true;
-			} else { // find an end token, break the loop and return the result
-				if (line.startsWith(endToken))
-					break;
-				else {
-					if (!line.trim().isEmpty())
-						result.add(line);
-				}
-			}
-		}
-		return result;
-	}
-
 	// Info panes: info, images, video, resources
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();
@@ -236,12 +156,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		String fileName = oName + ".txt";
 		String photoName = oName + ".jpg";
-
-		// Get information of organism from text file
-		String str = readFile(fileName);
-		String info = getInfo(str);
 
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
@@ -249,7 +164,7 @@ public class OISGUI extends JFrame implements ActionListener {
 				+ "<head><link rel='stylesheet' href='style.css'>\n"
 				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
 				+ "<body>\n" + "<img src='file:" + photoName + "' alt='"
-				+ photoName + "' height='177' width='248'>" + "<p>" + info
+				+ photoName + "' height='177' width='248'>" + "<p>" + data.getInfo()
 				+ "</p>" + "<br><br>" + "</body>\n</html>";
 
 		infoPane.setDocument(docs[INFO_TAB_ID]);
@@ -262,18 +177,18 @@ public class OISGUI extends JFrame implements ActionListener {
 				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
 				+ "<body>\n" + "<table align='center'>\n";
 
-		if (getImgLinks(str) != null) {
+		if (data.getImageLinks() != null) {
 			int index = 0;
-			for (int i = 0; i < getImgLinks(str).size(); i++) {
+			for (int i = 0; i < data.getImageLinks().size(); i++) {
 				if (i == 0 || (i % 2) == 0) {
 					htmlString += "<tr><td>\n" + "<img src='"
-							+ getImgLinks(str).get(i) + "' alt='"
-							+ getImgLinks(str).get(i)
+							+ data.getImageLinks().get(i) + "' alt='"
+							+ data.getImageLinks().get(i)
 							+ "' height='177' width='220'>" + "</td>\n";
 				} else {
 					htmlString += "<td>\n" + "<img src='"
-							+ getImgLinks(str).get(i) + "' alt='"
-							+ getImgLinks(str).get(i)
+							+ data.getImageLinks().get(i) + "' alt='"
+							+ data.getImageLinks().get(i)
 							+ "' height='177' width='220'>" + "</td></tr>\n";
 				}
 				index = i;
@@ -294,15 +209,15 @@ public class OISGUI extends JFrame implements ActionListener {
 
 		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
 		scrollPanes[IMAGE_TAB_ID] = new JScrollPane(imagePane);
-		scrollPanes[RESOURCE_TAB_ID] = new JScrollPane(prepareResourcePane(str));
-		scrollPanes[VIDEO_TAB_ID] = new JScrollPane(prepareVideoPane(str));
+		scrollPanes[RESOURCE_TAB_ID] = new JScrollPane(prepareResourcePane());
+		scrollPanes[VIDEO_TAB_ID] = new JScrollPane(prepareVideoPane());
 	}
 
 	// Resource pane consists of buttons, which will open default web browser
 	// with the url
-	public JPanel prepareResourcePane(String string) {
+	public JPanel prepareResourcePane() {
 		resourcePane = new JPanel();
-		ArrayList<String> list = getResources(string);
+		ArrayList<String> list = data.getResourceLinks();
 		if (list != null) {
 			resourcePane.setLayout(new GridLayout(list.size(), 1));
 			resourceButtons = new OISButton[list.size()];
@@ -331,8 +246,8 @@ public class OISGUI extends JFrame implements ActionListener {
 
 	// Video pane consists of buttons
 	// open url using default web browser
-	public JPanel prepareVideoPane(String string) {
-		ArrayList<String> list = getVideoLinks(string);
+	public JPanel prepareVideoPane() {
+		ArrayList<String> list = data.getVideoLinks();
 		videoPane = new JPanel();
 		videoButtons = new OISButton[list.size()];
 
