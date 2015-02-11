@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -6,21 +7,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.border.Border;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import javax.xml.ws.handler.MessageContext.Scope;
 
 public class OISGUI extends JFrame implements ActionListener {
 	// Application's attributes
@@ -94,15 +93,15 @@ public class OISGUI extends JFrame implements ActionListener {
 	private void prepareResultView(String oName) {
 		resultView = new JPanel();
 		resultView.setLayout(new BorderLayout());
+		resultView.setBorder(BorderFactory.createEmptyBorder());
 
 		// Tabbed pane
 		tabbedPane = new JTabbedPane();
-
 		// Information pane
 		scrollPanes = new JScrollPane[TABBED_PANE_NUMBERS];
 		prepareInfoPane(oName);
-		//for (int i = 2; i < TABBED_PANE_NUMBERS; i++)
-		//	scrollPanes[i] = new JScrollPane(new JPanel());
+		// for (int i = 2; i < TABBED_PANE_NUMBERS; i++)
+		// scrollPanes[i] = new JScrollPane(new JPanel());
 		for (int i = 0; i < TABBED_PANE_NUMBERS; i++) {
 			tabbedPane.add(TABBED_PANE_CAPTION[i], scrollPanes[i]);
 		}
@@ -112,10 +111,10 @@ public class OISGUI extends JFrame implements ActionListener {
 
 		// resultView button
 		resultButton.addActionListener(this);
-		for (int i = 0; i < resourceButtons.length; i++) {
-		}
+
 	}
 
+	// Handle button click event
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 			System.out.println("Hello from button "
@@ -215,8 +214,10 @@ public class OISGUI extends JFrame implements ActionListener {
 		return result;
 	}
 
+	// Info panes: info, images, video, resources
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();
+		infoPane.setBackground(Color.BLACK);
 		infoPane.setEditable(false);
 		kits = new HTMLEditorKit[2];
 		styleSheets = new StyleSheet[2];
@@ -286,6 +287,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		htmlString += "</table>\n" + "</body>\n</html>";
 
 		imagePane = new JEditorPane();
+		imagePane.setBackground(Color.BLACK);
 		imagePane.setEditable(false);
 		imagePane.setEditorKit(kits[IMAGE_TAB_ID]);
 		imagePane.setDocument(docs[IMAGE_TAB_ID]);
@@ -297,6 +299,8 @@ public class OISGUI extends JFrame implements ActionListener {
 		scrollPanes[VIDEO_TAB_ID] = new JScrollPane(prepareVideoPane(str));
 	}
 
+	// Resource pane consists of buttons, which will open default web browser
+	// with the url
 	public JPanel prepareResourcePane(String string) {
 		resourcePane = new JPanel();
 		ArrayList<String> list = getResources(string);
@@ -306,56 +310,57 @@ public class OISGUI extends JFrame implements ActionListener {
 
 			for (int i = 0; i < list.size(); i++) {
 				resourceButtons[i] = new OISButton(list.get(i));
-        		resourceButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
+				resourceButtons[i].setUrl(list.get(i));
+				resourceButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
 				resourceButtons[i].addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent event) {
 						OISButton b = (OISButton) event.getSource();
 						try {
-							openWebpage(new URI(b.getText()));
+							openWebpage(new URI(b.getUrl()));
 
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-				}
-				);
+				});
 				resourcePane.add(resourceButtons[i]);
 			}
 		}
 		return resourcePane;
 	}
-	public JPanel prepareVideoPane(String string){
-		ArrayList<String> list = getVideoLinks(string);
-        videoPane = new JPanel();
-        videoButtons = new OISButton[list.size()];        
-        
-        if(list != null)
-        {        	
-            videoPane.setLayout(new GridLayout(list.size(), 1));
 
-        	for(int i =0; i < list.size(); i++ )
-        	{
-        		videoButtons[i]= new OISButton(list.get(i));
-        		videoButtons[i].setFont(new Font("Arial", Font.BOLD, 12));
-        		videoButtons[i].addActionListener(new ActionListener(){					
+	// Video pane consists of buttons
+	// open url using default web browser
+	public JPanel prepareVideoPane(String string) {
+		ArrayList<String> list = getVideoLinks(string);
+		videoPane = new JPanel();
+		videoButtons = new OISButton[list.size()];
+
+		if (list != null) {
+			videoPane.setLayout(new GridLayout(list.size(), 1));
+
+			for (int i = 0; i < list.size(); i++) {
+				videoButtons[i] = new OISButton("Video " + (i + 1));
+				videoButtons[i].setUrl(list.get(i));
+				videoButtons[i].setFont(new Font("Arial", Font.BOLD, 20));
+				videoButtons[i].addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent event) {
-        			       	OISButton b = (OISButton)event.getSource();
-        			       	try {
-        			       		openWebpage(new URI(b.getText()));        							
-        						} catch (Exception e) {
-        							e.printStackTrace();
-        						}
-        				 }        				
-        		}        				
-        				);
-        		
-                videoPane.add(videoButtons[i]);
-        	}
-        }         
-        return videoPane;
-    }
+						OISButton b = (OISButton) event.getSource();
+						try {
+							openWebpage(new URI(b.getUrl()));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				videoPane.add(videoButtons[i]);
+			}
+		}
+		return videoPane;
+	}
+
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
 
 	public static void openWebpage(URI url) {

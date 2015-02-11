@@ -6,9 +6,11 @@ import javax.swing.SwingConstants;
 
 
 public class OISButton extends JButton{
-	private final static int COLOR_R = 100;
-	private final static int COLOR_G = 200;
-	private final static int COLOR_B = 240;
+	private final static int COLOR_R = 000;
+	private final static int COLOR_G = 000;
+	private final static int COLOR_B = 000;
+	
+	private String url;
 	/**
 	 * 
 	 */
@@ -36,4 +38,13 @@ public class OISButton extends JButton{
 		setFont(new Font("Arial", Font.BOLD, 40));
 		setForeground(Color.WHITE);
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
 }
