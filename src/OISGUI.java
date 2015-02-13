@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -168,12 +169,16 @@ public class OISGUI extends JFrame implements ActionListener {
 		if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 			System.out.println("Hello from button "
 					+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
-			prepareResultView("cat");
-			remove(mainView);
-			add(resultView, BorderLayout.CENTER);
-			validate();
-			repaint();
-
+			if (isInternetReachable()){
+				prepareResultView("cat");
+				remove(mainView);
+				add(resultView, BorderLayout.CENTER);
+				validate();
+				repaint();
+			} else {
+				JOptionPane.showMessageDialog(this, "Internet Connection Required",
+						"Cannot access internet", JOptionPane.ERROR_MESSAGE);
+			}
 		} else if (e.getSource() == mainButtons[OPEN_BUTTON_ID]) {
 			System.out.println("Hello from button "
 					+ MAIN_BUTTON_TEXT[OPEN_BUTTON_ID]);
