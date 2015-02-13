@@ -24,9 +24,9 @@ With the exception of Antarctica, Australia, New Zealand, Madagascar, Japan, and
 Blank
 
 #Feeds On
-Chousingha
-Deer Mouse
-Forest Rabbit
+Chousingha, 
+Deer Mouse, 
+Forest Rabbit.
 
 #First Appearance
 33.3 million years ago
