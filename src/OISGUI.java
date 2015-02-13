@@ -158,7 +158,6 @@ public class OISGUI extends JFrame implements ActionListener {
 		resultButton = new OISButton("BACK");
 		resultView.add(tabbedPane, BorderLayout.CENTER);
 		resultView.add(resultButton, BorderLayout.SOUTH);
-
 		// resultView button
 		resultButton.addActionListener(this);
 
@@ -229,7 +228,8 @@ public class OISGUI extends JFrame implements ActionListener {
 
 		infoPane.setDocument(docs[INFO_TAB_ID]);
 		infoPane.setText(htmlString);
-
+		infoPane.setCaretPosition(0);		// force display info page from the beginning instead of being scrolled down
+		
 		// Image pane
 		// create some simple html as a string
 		htmlString = "<html>\n"
@@ -266,7 +266,8 @@ public class OISGUI extends JFrame implements ActionListener {
 		imagePane.setEditorKit(kits[IMAGE_TAB_ID]);
 		imagePane.setDocument(docs[IMAGE_TAB_ID]);
 		imagePane.setText(htmlString);
-
+		imagePane.setCaretPosition(0);		// force display image pane from the beginning
+		
 		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
 		scrollPanes[IMAGE_TAB_ID] = new JScrollPane(imagePane);
 		scrollPanes[RESOURCE_TAB_ID] = new JScrollPane(prepareResourcePane());
@@ -336,7 +337,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	}
 
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
-
+	// open Default Web Browser with a specified URL
 	public static void openWebpage(URI url) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop()
 				: null;
@@ -350,6 +351,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	}
 	
 	// http://stackoverflow.com/questions/1139547/detect-internet-connection-using-java
+	// Check if there is internet connection
 	public static boolean isInternetReachable() {
 		try {
 			// make a URL to a known source
