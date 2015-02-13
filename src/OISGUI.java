@@ -4,11 +4,16 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -32,11 +37,11 @@ import javax.swing.text.html.StyleSheet;
 public class OISGUI extends JFrame implements ActionListener {
 	// Application's attributes
 	private final static String OIS_TITLE = "ORGANISM IDENTIFICATION SYSTEM - OIS";
-	private final static int OIS_WIDTH = 570;
+	private final static int OIS_WIDTH = 540;
 	private final static int OIS_HEIGHT = 1000;
 	private final static String TOP_IMAGE_PATH = "top.jpg";
 	private final static String BOTTOM_IMAGE_PATH = "bottom.jpg";
-	private final static String LEFT_IMAGE_PATH = "left.jpg";
+	private final static String LEFT_IMAGE_PATH = "left.png";
 	private final static String RIGHT_IMAGE_PATH = "right.jpg";
 	private JLabel topLabel, bottomLabel, leftLabel, rightLabel;
 	private ImageIcon topImage, bottomImage, leftImage, rightImage;
@@ -92,15 +97,15 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Create 4 labels and set icon using respective images
 		topLabel = new JLabel(topImage);
 		//topLabel.setLayout(new BorderLayout());
-		topLabel.setPreferredSize(new Dimension(WIDTH, 120));
+		topLabel.setPreferredSize(new Dimension(WIDTH, 80));
 		topLabel.setIcon(topImage);
 		bottomLabel = new JLabel(bottomImage);
-		bottomLabel.setPreferredSize(new Dimension(WIDTH, 120));
+		bottomLabel.setPreferredSize(new Dimension(WIDTH, 80));
 		//bottomLabel.setIcon(bottomImage);
 		leftLabel = new JLabel(leftImage);
-		leftLabel.setPreferredSize(new Dimension(20, HEIGHT- 220));
+		leftLabel.setPreferredSize(new Dimension(20, HEIGHT- 160));
 		rightLabel = new JLabel(rightImage);
-		rightLabel.setPreferredSize(new Dimension(20, HEIGHT- 220));
+		rightLabel.setPreferredSize(new Dimension(20, HEIGHT- 160));
 		
 		add(topLabel, BorderLayout.NORTH);
 		add(bottomLabel, BorderLayout.SOUTH);
@@ -337,5 +342,27 @@ public class OISGUI extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	// http://stackoverflow.com/questions/1139547/detect-internet-connection-using-java
+	public static boolean isInternetReachable() {
+		try {
+			// make a URL to a known source
+			URL url = new URL("http://www.google.com");
+
+			// open a connection to that source
+			HttpURLConnection urlConnect = (HttpURLConnection) url
+					.openConnection();
+
+			// trying to retrieve data from the source. If there
+			// is no connection, this line will fail
+			Object objData = urlConnect.getContent();
+
+		} catch (UnknownHostException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
 	}
 }
