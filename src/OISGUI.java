@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -16,18 +17,21 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -46,10 +50,11 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static String BOTTOM_IMAGE_PATH = "/appdata/bottom.jpg";
 	private final static String LEFT_IMAGE_PATH = "/appdata/left.png";
 	private final static String RIGHT_IMAGE_PATH = "/appdata/right.jpg";
-	private final static String APP_PATH = System.getProperty("user.dir").replace('\\', '/');
+	private final static String APP_PATH = System.getProperty("user.dir")
+			.replace('\\', '/');
 	private JLabel topLabel, bottomLabel, leftLabel, rightLabel;
 	private ImageIcon topImage, bottomImage, leftImage, rightImage;
-	
+
 	// Main frame's components
 	private final static int MAIN_BUTTION_NUMBERS = 3;
 	private final static String[] MAIN_BUTTON_TEXT = { "CAPTURE", "OPEN FILE",
@@ -72,7 +77,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	private JTabbedPane tabbedPane;
 	private JScrollPane[] scrollPanes;
 	private OISData data;
-	
+
 	// Number of tabs
 	public static final int TABBED_PANE_NUMBERS = 4;
 	public static final int INFO_TAB_ID = 0;
@@ -80,43 +85,44 @@ public class OISGUI extends JFrame implements ActionListener {
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
 	Image img;
+
 	public OISGUI() {
 		// Create app frame
 		super();
 		setTitle(OIS_TITLE);
 		setSize(OIS_WIDTH, OIS_HEIGHT);
 		setLayout(new BorderLayout());
-		
+
 		// Get top, bottom, left, right image and put it around mainView1
-		// Get current path; http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
-		try{
-		topImage = new ImageIcon(APP_PATH + TOP_IMAGE_PATH);
-		bottomImage = new ImageIcon(APP_PATH + BOTTOM_IMAGE_PATH);
-		leftImage = new ImageIcon(APP_PATH + LEFT_IMAGE_PATH);
-		rightImage = new ImageIcon(APP_PATH + RIGHT_IMAGE_PATH);
-		
-		// Create 4 labels and set icon using respective images
-		topLabel = new JLabel(topImage);
-		//topLabel.setLayout(new BorderLayout());
-		topLabel.setPreferredSize(new Dimension(WIDTH, 80));
-		topLabel.setIcon(topImage);
-		bottomLabel = new JLabel(bottomImage);
-		bottomLabel.setPreferredSize(new Dimension(WIDTH, 80));
-		//bottomLabel.setIcon(bottomImage);
-		leftLabel = new JLabel(leftImage);
-		leftLabel.setPreferredSize(new Dimension(20, HEIGHT- 160));
-		rightLabel = new JLabel(rightImage);
-		rightLabel.setPreferredSize(new Dimension(20, HEIGHT- 160));
-		
-		add(topLabel, BorderLayout.NORTH);
-		add(bottomLabel, BorderLayout.SOUTH);
-		add(leftLabel, BorderLayout.WEST);
-		add(rightLabel, BorderLayout.EAST);
-		prepareMainView();
-		add(mainView, BorderLayout.CENTER);
-		setVisible(true);
-		}
-		catch (Exception e){
+		// Get current path;
+		// http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
+		try {
+			topImage = new ImageIcon(APP_PATH + TOP_IMAGE_PATH);
+			bottomImage = new ImageIcon(APP_PATH + BOTTOM_IMAGE_PATH);
+			leftImage = new ImageIcon(APP_PATH + LEFT_IMAGE_PATH);
+			rightImage = new ImageIcon(APP_PATH + RIGHT_IMAGE_PATH);
+
+			// Create 4 labels and set icon using respective images
+			topLabel = new JLabel(topImage);
+			// topLabel.setLayout(new BorderLayout());
+			topLabel.setPreferredSize(new Dimension(WIDTH, 80));
+			topLabel.setIcon(topImage);
+			bottomLabel = new JLabel(bottomImage);
+			bottomLabel.setPreferredSize(new Dimension(WIDTH, 80));
+			// bottomLabel.setIcon(bottomImage);
+			leftLabel = new JLabel(leftImage);
+			leftLabel.setPreferredSize(new Dimension(20, HEIGHT - 160));
+			rightLabel = new JLabel(rightImage);
+			rightLabel.setPreferredSize(new Dimension(20, HEIGHT - 160));
+
+			add(topLabel, BorderLayout.NORTH);
+			add(bottomLabel, BorderLayout.SOUTH);
+			add(leftLabel, BorderLayout.WEST);
+			add(rightLabel, BorderLayout.EAST);
+			prepareMainView();
+			add(mainView, BorderLayout.CENTER);
+			setVisible(true);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -144,7 +150,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		resultView.setLayout(new BorderLayout());
 		resultView.setBorder(BorderFactory.createEmptyBorder());
 		data = new OISData(oName);
-		
+
 		// Tabbed pane
 		tabbedPane = new JTabbedPane();
 		// Information pane
@@ -165,38 +171,61 @@ public class OISGUI extends JFrame implements ActionListener {
 
 	// Handle button click event
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
-			System.out.println("Hello from button "
-					+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
-			if (isInternetReachable()){
-				prepareResultView("cat");
-				remove(mainView);
-				add(resultView, BorderLayout.CENTER);
+		try {
+			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
+				System.out.println("Hello from button "
+						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
+				if (isInternetReachable()) {
+					prepareResultView("cat");
+					remove(mainView);
+					add(resultView, BorderLayout.CENTER);
+					validate();
+					repaint();
+				} else {
+					JOptionPane
+							.showMessageDialog(this,
+									"Internet Connection Required",
+									"Cannot access internet",
+									JOptionPane.ERROR_MESSAGE);
+				}
+			} else if (e.getSource() == mainButtons[OPEN_BUTTON_ID]) {
+				System.out.println("Hello from button "
+						+ MAIN_BUTTON_TEXT[OPEN_BUTTON_ID]);
+				// Open File Dialog
+				// http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
+				// http://www.codejava.net/java-se/swing/add-file-filter-for-jfilechooser-dialog
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				FileNameExtensionFilter ff = new FileNameExtensionFilter("Images: jpg, png, gif, bmp", "jpg", "png", "gif", "bmp");
+				fc.addChoosableFileFilter(ff);
+				fc.setFileFilter(ff);	// default filter to images
+				int returnVal = fc.showOpenDialog(this);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					System.out.println("Selected file path: " + file.getCanonicalPath());
+				} else {
+					System.out.println("File selection canceled");
+				}
+			} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
+				System.out.println("Hello from button "
+						+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
+			} else if (e.getSource() == resultButton) {
+				System.out.println("Hello from resultView buttotn");
+				remove(resultView);
+				add(mainView);
 				validate();
 				repaint();
-			} else {
-				JOptionPane.showMessageDialog(this, "Internet Connection Required",
-						"Cannot access internet", JOptionPane.ERROR_MESSAGE);
 			}
-		} else if (e.getSource() == mainButtons[OPEN_BUTTON_ID]) {
-			System.out.println("Hello from button "
-					+ MAIN_BUTTON_TEXT[OPEN_BUTTON_ID]);
-		} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
-			System.out.println("Hello from button "
-					+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
-		} else if (e.getSource() == resultButton) {
-			System.out.println("Hello from resultView buttotn");
-			remove(resultView);
-			add(mainView);
-			validate();
-			repaint();
+		} catch (Exception err) {
+			err.printStackTrace();
 		}
+
 	}
 
 	// Info panes: info, images, video, resources
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();
-		//infoPane.setBackground(Color.BLACK);
+		// infoPane.setBackground(Color.BLACK);
 		infoPane.setEditable(false);
 		kits = new HTMLEditorKit[2];
 		styleSheets = new StyleSheet[2];
@@ -205,10 +234,9 @@ public class OISGUI extends JFrame implements ActionListener {
 			kits[i] = new HTMLEditorKit();
 			// add some styles to the html
 			styleSheets[i] = kits[INFO_TAB_ID].getStyleSheet();
-			styleSheets[i]
-					.addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
+			styleSheets[i].addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
 			styleSheets[i].addRule("h2 {color: #D8D8D8; background-color: #00000; }");
-	        styleSheets[i].addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
+			styleSheets[i].addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
 			styleSheets[i].addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
 			// create a document, set it on the jeditorpane, then add the html
 			docs[i] = kits[i].createDefaultDocument();
@@ -222,14 +250,17 @@ public class OISGUI extends JFrame implements ActionListener {
 		String htmlString = "<html>\n"
 				+ "<head><link rel='stylesheet' href='style.css'>\n"
 				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
-				+ "<body>\n" + "<div align='center'><img src='file:" + photoName + "' alt='"
-				+ photoName + "' height='177' width='250'></div>" + "<p>" + data.getInfo()
+				+ "<body>\n" + "<div align='center'><img src='file:"
+				+ photoName + "' alt='" + photoName
+				+ "' height='177' width='250'></div>" + "<p>" + data.getInfo()
 				+ "</p>" + "<br><br>" + "</body>\n</html>";
 
 		infoPane.setDocument(docs[INFO_TAB_ID]);
 		infoPane.setText(htmlString);
-		infoPane.setCaretPosition(0);		// force display info page from the beginning instead of being scrolled down
-		
+		infoPane.setCaretPosition(0); // force display info page from the
+										// beginning instead of being scrolled
+										// down
+
 		// Image pane
 		// create some simple html as a string
 		htmlString = "<html>\n"
@@ -266,8 +297,9 @@ public class OISGUI extends JFrame implements ActionListener {
 		imagePane.setEditorKit(kits[IMAGE_TAB_ID]);
 		imagePane.setDocument(docs[IMAGE_TAB_ID]);
 		imagePane.setText(htmlString);
-		imagePane.setCaretPosition(0);		// force display image pane from the beginning
-		
+		imagePane.setCaretPosition(0); // force display image pane from the
+										// beginning
+
 		scrollPanes[INFO_TAB_ID] = new JScrollPane(infoPane);
 		scrollPanes[IMAGE_TAB_ID] = new JScrollPane(imagePane);
 		scrollPanes[RESOURCE_TAB_ID] = new JScrollPane(prepareResourcePane());
@@ -337,12 +369,13 @@ public class OISGUI extends JFrame implements ActionListener {
 	}
 
 	// Get about info from file and put into a panel
-	public JPanel prepareAboutPane(){
-		OISData about= new OISData("about");
+	public JPanel prepareAboutPane() {
+		OISData about = new OISData("about");
 		String aboutInfo = about.getInfo();
-		
+
 		return new JPanel();
 	}
+
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
 	// open Default Web Browser with a specified URL
 	public static void openWebpage(URI url) {
@@ -356,7 +389,7 @@ public class OISGUI extends JFrame implements ActionListener {
 			}
 		}
 	}
-	
+
 	// http://stackoverflow.com/questions/1139547/detect-internet-connection-using-java
 	// Check if there is internet connection
 	public static boolean isInternetReachable() {
@@ -379,5 +412,5 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		return true;
 	}
-	
+
 }
