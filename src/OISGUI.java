@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -76,7 +77,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	public static final int IMAGE_TAB_ID = 1;
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
-
+	Image img;
 	public OISGUI() {
 		// Create app frame
 		super();
@@ -87,13 +88,12 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Get top, bottom, left, right image and put it around mainView1
 		// Get current path; http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
 		try{
-		//String path = System.getProperty("user.dir");
-		//System.out.println(path);
-		//BufferedImage img = ImageIO.read(new File(path + '\\' + TOP_IMAGE_PATH));
-		topImage = new ImageIcon(TOP_IMAGE_PATH);
-		bottomImage = new ImageIcon(BOTTOM_IMAGE_PATH);
-		leftImage = new ImageIcon(LEFT_IMAGE_PATH);
-		rightImage = new ImageIcon(RIGHT_IMAGE_PATH);
+		String path = System.getProperty("user.dir");
+		path = path.replace('\\', '/');
+		topImage = new ImageIcon(path + "/appdata/" + TOP_IMAGE_PATH);
+		bottomImage = new ImageIcon(path + "/appdata/" + BOTTOM_IMAGE_PATH);
+		leftImage = new ImageIcon(path + "/appdata/" + LEFT_IMAGE_PATH);
+		rightImage = new ImageIcon(path + "/appdata/" + RIGHT_IMAGE_PATH);
 		
 		// Create 4 labels and set icon using respective images
 		topLabel = new JLabel(topImage);
