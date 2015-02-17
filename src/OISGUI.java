@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JApplet;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,10 +42,11 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static String OIS_TITLE = "ORGANISM IDENTIFICATION SYSTEM - OIS";
 	private final static int OIS_WIDTH = 540;
 	private final static int OIS_HEIGHT = 1000;
-	private final static String TOP_IMAGE_PATH = "top.jpg";
-	private final static String BOTTOM_IMAGE_PATH = "bottom.jpg";
-	private final static String LEFT_IMAGE_PATH = "left.png";
-	private final static String RIGHT_IMAGE_PATH = "right.jpg";
+	private final static String TOP_IMAGE_PATH = "/appdata/top.jpg";
+	private final static String BOTTOM_IMAGE_PATH = "/appdata/bottom.jpg";
+	private final static String LEFT_IMAGE_PATH = "/appdata/left.png";
+	private final static String RIGHT_IMAGE_PATH = "/appdata/right.jpg";
+	private final static String APP_PATH = System.getProperty("user.dir").replace('\\', '/');
 	private JLabel topLabel, bottomLabel, leftLabel, rightLabel;
 	private ImageIcon topImage, bottomImage, leftImage, rightImage;
 	
@@ -88,12 +90,10 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Get top, bottom, left, right image and put it around mainView1
 		// Get current path; http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
 		try{
-		String path = System.getProperty("user.dir");
-		path = path.replace('\\', '/');
-		topImage = new ImageIcon(path + "/appdata/" + TOP_IMAGE_PATH);
-		bottomImage = new ImageIcon(path + "/appdata/" + BOTTOM_IMAGE_PATH);
-		leftImage = new ImageIcon(path + "/appdata/" + LEFT_IMAGE_PATH);
-		rightImage = new ImageIcon(path + "/appdata/" + RIGHT_IMAGE_PATH);
+		topImage = new ImageIcon(APP_PATH + TOP_IMAGE_PATH);
+		bottomImage = new ImageIcon(APP_PATH + BOTTOM_IMAGE_PATH);
+		leftImage = new ImageIcon(APP_PATH + LEFT_IMAGE_PATH);
+		rightImage = new ImageIcon(APP_PATH + RIGHT_IMAGE_PATH);
 		
 		// Create 4 labels and set icon using respective images
 		topLabel = new JLabel(topImage);
@@ -336,6 +336,13 @@ public class OISGUI extends JFrame implements ActionListener {
 		return videoPane;
 	}
 
+	// Get about info from file and put into a panel
+	public JPanel prepareAboutPane(){
+		OISData about= new OISData("about");
+		String aboutInfo = about.getInfo();
+		
+		return new JPanel();
+	}
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
 	// open Default Web Browser with a specified URL
 	public static void openWebpage(URI url) {
@@ -372,4 +379,5 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		return true;
 	}
+	
 }
