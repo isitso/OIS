@@ -46,12 +46,12 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static String OIS_TITLE = "ORGANISM IDENTIFICATION SYSTEM - OIS";
 	private final static int OIS_WIDTH = 540;
 	private final static int OIS_HEIGHT = 1000;
-	private final static String TOP_IMAGE_PATH = "/appdata/top.jpg";
-	private final static String BOTTOM_IMAGE_PATH = "/appdata/bottom.jpg";
-	private final static String LEFT_IMAGE_PATH = "/appdata/left.png";
-	private final static String RIGHT_IMAGE_PATH = "/appdata/right.jpg";
-	private final static String APP_PATH = System.getProperty("user.dir")
-			.replace('\\', '/');
+	private final static String TOP_IMAGE_PATH = "appdata/top.jpg";
+	private final static String BOTTOM_IMAGE_PATH = "appdata/bottom.jpg";
+	private final static String LEFT_IMAGE_PATH = "appdata/left.png";
+	private final static String RIGHT_IMAGE_PATH = "appdata/right.jpg";
+	//private final static String APP_PATH = System.getProperty("user.dir")
+	//		.replace('\\', '/');
 	private JLabel topLabel, bottomLabel, leftLabel, rightLabel;
 	private ImageIcon topImage, bottomImage, leftImage, rightImage;
 
@@ -84,7 +84,7 @@ public class OISGUI extends JFrame implements ActionListener {
 	public static final int IMAGE_TAB_ID = 1;
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
-	Image img;
+	//Image img;
 
 	public OISGUI() {
 		// Create app frame
@@ -97,10 +97,10 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Get current path;
 		// http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
 		try {
-			topImage = new ImageIcon(APP_PATH + TOP_IMAGE_PATH);
-			bottomImage = new ImageIcon(APP_PATH + BOTTOM_IMAGE_PATH);
-			leftImage = new ImageIcon(APP_PATH + LEFT_IMAGE_PATH);
-			rightImage = new ImageIcon(APP_PATH + RIGHT_IMAGE_PATH);
+			topImage = new ImageIcon(TOP_IMAGE_PATH);
+			bottomImage = new ImageIcon(BOTTOM_IMAGE_PATH);
+			leftImage = new ImageIcon(LEFT_IMAGE_PATH);
+			rightImage = new ImageIcon(RIGHT_IMAGE_PATH);
 
 			// Create 4 labels and set icon using respective images
 			topLabel = new JLabel(topImage);
@@ -243,7 +243,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		String photoName = oName + ".jpg";
+		String photoName = "odata/" + oName + ".jpg";
 
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
