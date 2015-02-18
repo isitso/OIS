@@ -2,12 +2,12 @@ $Info
 #Description
 The Organism Identification System (henceforth referred to as OIS) is a virtual encyclopedia that gives information about all the organisms (i.e. animals, plants and fungi) in the world that are contained in its database. In order to identify an organism, it uses the User's location and a picture of the organism captured via the smartphone's camera. It then looks through the database for a match, and presents the organism's information (e.g. it's name, habitat, prey, danger level, etc.) to the User.
 
-#Created By
-David Arias (CS337)<br>
-Kiara Westbrooks (CS337/CS437)<br>
-Ahmed (CS337/CS437)<br>
-Danial Soto (CS437)<br>
-Ryan Ho (CS337/CS437)<br>
+#Created by
+David Arias - davidariascg@gmail.com(CS337)<br>
+Kiara Westbrooks - kiarawestbrooks@gmail.com(CS337/CS437)<br>
+Ahmed Al Obaidi - ahmed1409@live.com(CS337/CS437)<br>
+Danial Soto - danielsoto03@gmail.com(CS437)<br>
+Ryan Ho - ryan033111@gmail.com(CS337/CS437)<br>
 
 #Thanks to
 OpenCV - opencv.org<br>
