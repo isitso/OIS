@@ -4,25 +4,18 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -78,6 +71,12 @@ public class OISGUI extends JFrame implements ActionListener {
 	private JScrollPane[] scrollPanes;
 	private OISData data;
 
+	// About frame's components
+	private JPanel aboutView;
+	private OISButton aboutButton;
+	private HTMLEditorKit aboutKit;
+	private StyleSheet aboutSS;
+	private Document aboutDoc;
 	// Number of tabs
 	public static final int TABBED_PANE_NUMBERS = 4;
 	public static final int INFO_TAB_ID = 0;
@@ -176,6 +175,7 @@ public class OISGUI extends JFrame implements ActionListener {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
 				if (isInternetReachable()) {
+					//String result = ???;
 					prepareResultView("cat");
 					remove(mainView);
 					add(resultView, BorderLayout.CENTER);
@@ -209,17 +209,28 @@ public class OISGUI extends JFrame implements ActionListener {
 			} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
+				remove(mainView);
+				prepareAboutPane();
+				add(aboutView);
+				validate();
+				repaint();
 			} else if (e.getSource() == resultButton) {
 				System.out.println("Hello from resultView buttotn");
 				remove(resultView);
 				add(mainView);
 				validate();
 				repaint();
+			} else if (e.getSource() == aboutButton) {
+				System.out.println("Hello from aboutView button");
+				remove(aboutView);
+				add(mainView);
+				validate();
+				repaint();
 			}
+			
 		} catch (Exception err) {
 			err.printStackTrace();
 		}
-
 	}
 
 	// Info panes: info, images, video, resources
@@ -237,7 +248,6 @@ public class OISGUI extends JFrame implements ActionListener {
 			styleSheets[i].addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
 			styleSheets[i].addRule("h2 {color: #D8D8D8; background-color: #00000; }");
 			styleSheets[i].addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
-			styleSheets[i].addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
 			// create a document, set it on the jeditorpane, then add the html
 			docs[i] = kits[i].createDefaultDocument();
 		}
@@ -248,8 +258,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
 		String htmlString = "<html>\n"
-				+ "<head><link rel='stylesheet' href='style.css'>\n"
-				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
+				+ "<head>\n</head>\n"
 				+ "<body>\n" + "<div align='center'><img src='file:"
 				+ photoName + "' alt='" + photoName
 				+ "' height='177' width='250'></div>" + "<p>" + data.getInfo()
@@ -264,8 +273,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Image pane
 		// create some simple html as a string
 		htmlString = "<html>\n"
-				+ "<head><link rel='stylesheet' href='style.css'>\n"
-				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
+				+ "<head>\n</head>\n"
 				+ "<body>\n" + "<table align='center'>\n";
 
 		if (data.getImageLinks() != null) {
@@ -369,11 +377,31 @@ public class OISGUI extends JFrame implements ActionListener {
 	}
 
 	// Get about info from file and put into a panel
-	public JPanel prepareAboutPane() {
+	public void prepareAboutPane() {
 		OISData about = new OISData("about");
-		String aboutInfo = about.getInfo();
-
-		return new JPanel();
+		//String aboutInfo = about.getInfo();
+		JEditorPane tmpEditorPane = new JEditorPane();
+		aboutKit = new HTMLEditorKit();
+		aboutSS = aboutKit.getStyleSheet();
+		aboutSS.addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
+		aboutSS.addRule("h2 {color: #D8D8D8; background-color: #00000; }");
+		aboutSS.addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
+		aboutDoc = aboutKit.createDefaultDocument();
+		tmpEditorPane.setEditorKit(aboutKit);
+		tmpEditorPane.setDocument(aboutDoc);
+		String aboutStr = "<html>\n"
+				+ "<head>\n</head>\n"
+				+ "<body>\n" + about.getInfo()
+				+ "</p>" + "<br><br>" + "</body>\n</html>";
+		tmpEditorPane.setText(aboutStr);
+		tmpEditorPane.setEditable(false);
+		JScrollPane tmpScrollPane = new JScrollPane(tmpEditorPane);
+		aboutView = new JPanel();
+		aboutView.setLayout(new BorderLayout());
+		aboutButton = new OISButton("BACK");
+		aboutView.add(aboutButton, BorderLayout.SOUTH);
+		aboutView.add(tmpScrollPane, BorderLayout.CENTER);
+		aboutButton.addActionListener(this);
 	}
 
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
