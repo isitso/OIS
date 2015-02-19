@@ -58,6 +58,14 @@ public class OISGUI extends JFrame implements ActionListener {
 	private JPanel mainView;
 	private OISButton[] mainButtons;
 
+	// Capture frame's components
+	private JPanel captureView;
+	private OISButton captureButtons[];
+	private final static String[] CAPTURE_BUTTONS_TEXT = {"BACK", "CAPTURE"};
+	private final static int CAPTURE_VIEW_BACK_BUTTON_ID = 0;
+	private final static int CAPTURE_VIEW_CAP_BUTTON_ID = 1;
+	private final static int CAPTURE_VIEW_BUTTON_NUMBERS = 2;
+	
 	// Result frame's components
 	private final static String[] TABBED_PANE_CAPTION = { "INFO", "IMAGES",
 			"VIDEOS", "RESOURCES" };
@@ -233,6 +241,14 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	// Capture View: Panel that display video from camera/webcame
+	// 2 buttons: one to go back to the main view (cancel/back),
+	// 			one to capture current frame and save as image,
+	//			which will be used to recognize
+	public void prepareCaptureView(){
+		
+	}
+	
 	// Info panes: info, images, video, resources
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();

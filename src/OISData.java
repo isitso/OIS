@@ -51,7 +51,6 @@ public class OISData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// Extract info part from a String that starts with $Info and ends when
