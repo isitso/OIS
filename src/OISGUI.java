@@ -36,7 +36,6 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
-import daniels.CatDetection;
 
 /*	OISGUI: There will be mainView and resultView
  * 	mainView contains main buttons that let user capture, open image, and about the app
