@@ -29,6 +29,7 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+
 /*	OISGUI: There will be mainView and resultView
  * 	mainView contains main buttons that let user capture, open image, and about the app
  * 	resultView contains information of the organism: info, images, videos, and resource links
@@ -182,9 +183,14 @@ public class OISGUI extends JFrame implements ActionListener {
 			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
-				if (isInternetReachable()) {
-					//String result = ???;
+				if (isInternetReachable()) {//<<<<<<< HEAD
+					
+					//pass captured image directory to daniel and kiara's method.
+					
+//=======
+					//String result = ???;>>>>>>> master
 					prepareResultView("cat");
+					
 					remove(mainView);
 					add(resultView, BorderLayout.CENTER);
 					validate();
@@ -210,7 +216,11 @@ public class OISGUI extends JFrame implements ActionListener {
 				int returnVal = fc.showOpenDialog(this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
+					//pass file.getCanonicalPath() to method
 					System.out.println("Selected file path: " + file.getCanonicalPath());
+					
+					CatDetection.organismIdentification(file.getCanonicalPath());
+					
 				} else {
 					System.out.println("File selection canceled");
 				}
