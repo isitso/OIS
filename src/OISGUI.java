@@ -4,25 +4,18 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -47,12 +40,12 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static String OIS_TITLE = "ORGANISM IDENTIFICATION SYSTEM - OIS";
 	private final static int OIS_WIDTH = 540;
 	private final static int OIS_HEIGHT = 1000;
-	private final static String TOP_IMAGE_PATH = "/appdata/top.jpg";
-	private final static String BOTTOM_IMAGE_PATH = "/appdata/bottom.jpg";
-	private final static String LEFT_IMAGE_PATH = "/appdata/left.png";
-	private final static String RIGHT_IMAGE_PATH = "/appdata/right.jpg";
-	private final static String APP_PATH = System.getProperty("user.dir")
-			.replace('\\', '/');
+	private final static String TOP_IMAGE_PATH = "appdata/top.jpg";
+	private final static String BOTTOM_IMAGE_PATH = "appdata/bottom.jpg";
+	private final static String LEFT_IMAGE_PATH = "appdata/left.png";
+	private final static String RIGHT_IMAGE_PATH = "appdata/right.jpg";
+	//private final static String APP_PATH = System.getProperty("user.dir")
+	//		.replace('\\', '/');
 	private JLabel topLabel, bottomLabel, leftLabel, rightLabel;
 	private ImageIcon topImage, bottomImage, leftImage, rightImage;
 
@@ -66,6 +59,14 @@ public class OISGUI extends JFrame implements ActionListener {
 	private JPanel mainView;
 	private OISButton[] mainButtons;
 
+	// Capture frame's components
+	private JPanel captureView;
+	private OISButton captureButtons[];
+	private final static String[] CAPTURE_BUTTONS_TEXT = {"BACK", "CAPTURE"};
+	private final static int CAPTURE_VIEW_BACK_BUTTON_ID = 0;
+	private final static int CAPTURE_VIEW_CAP_BUTTON_ID = 1;
+	private final static int CAPTURE_VIEW_BUTTON_NUMBERS = 2;
+	
 	// Result frame's components
 	private final static String[] TABBED_PANE_CAPTION = { "INFO", "IMAGES",
 			"VIDEOS", "RESOURCES" };
@@ -79,13 +80,19 @@ public class OISGUI extends JFrame implements ActionListener {
 	private JScrollPane[] scrollPanes;
 	private OISData data;
 
+	// About frame's components
+	private JPanel aboutView;
+	private OISButton aboutButton;
+	private HTMLEditorKit aboutKit;
+	private StyleSheet aboutSS;
+	private Document aboutDoc;
 	// Number of tabs
 	public static final int TABBED_PANE_NUMBERS = 4;
 	public static final int INFO_TAB_ID = 0;
 	public static final int IMAGE_TAB_ID = 1;
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
-	Image img;
+	//Image img;
 
 	public OISGUI() {
 		// Create app frame
@@ -98,10 +105,10 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Get current path;
 		// http://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java
 		try {
-			topImage = new ImageIcon(APP_PATH + TOP_IMAGE_PATH);
-			bottomImage = new ImageIcon(APP_PATH + BOTTOM_IMAGE_PATH);
-			leftImage = new ImageIcon(APP_PATH + LEFT_IMAGE_PATH);
-			rightImage = new ImageIcon(APP_PATH + RIGHT_IMAGE_PATH);
+			topImage = new ImageIcon(TOP_IMAGE_PATH);
+			bottomImage = new ImageIcon(BOTTOM_IMAGE_PATH);
+			leftImage = new ImageIcon(LEFT_IMAGE_PATH);
+			rightImage = new ImageIcon(RIGHT_IMAGE_PATH);
 
 			// Create 4 labels and set icon using respective images
 			topLabel = new JLabel(topImage);
@@ -176,10 +183,12 @@ public class OISGUI extends JFrame implements ActionListener {
 			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
-				if (isInternetReachable()) {
+				if (isInternetReachable()) {//<<<<<<< HEAD
 					
 					//pass captured image directory to daniel and kiara's method.
 					
+//=======
+					//String result = ???;>>>>>>> master
 					prepareResultView("cat");
 					
 					remove(mainView);
@@ -218,19 +227,38 @@ public class OISGUI extends JFrame implements ActionListener {
 			} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
+				remove(mainView);
+				prepareAboutPane();
+				add(aboutView);
+				validate();
+				repaint();
 			} else if (e.getSource() == resultButton) {
 				System.out.println("Hello from resultView buttotn");
 				remove(resultView);
 				add(mainView);
 				validate();
 				repaint();
+			} else if (e.getSource() == aboutButton) {
+				System.out.println("Hello from aboutView button");
+				remove(aboutView);
+				add(mainView);
+				validate();
+				repaint();
 			}
+			
 		} catch (Exception err) {
 			err.printStackTrace();
 		}
-
 	}
 
+	// Capture View: Panel that display video from camera/webcame
+	// 2 buttons: one to go back to the main view (cancel/back),
+	// 			one to capture current frame and save as image,
+	//			which will be used to recognize
+	public void prepareCaptureView(){
+		
+	}
+	
 	// Info panes: info, images, video, resources
 	public void prepareInfoPane(String oName) {
 		infoPane = new JEditorPane();
@@ -246,19 +274,17 @@ public class OISGUI extends JFrame implements ActionListener {
 			styleSheets[i].addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
 			styleSheets[i].addRule("h2 {color: #D8D8D8; background-color: #00000; }");
 			styleSheets[i].addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
-			styleSheets[i].addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
 			// create a document, set it on the jeditorpane, then add the html
 			docs[i] = kits[i].createDefaultDocument();
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		String photoName = oName + ".jpg";
+		String photoName = "odata/" + oName + ".jpg";
 
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
 		String htmlString = "<html>\n"
-				+ "<head><link rel='stylesheet' href='style.css'>\n"
-				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
+				+ "<head>\n</head>\n"
 				+ "<body>\n" + "<div align='center'><img src='file:"
 				+ photoName + "' alt='" + photoName
 				+ "' height='177' width='250'></div>" + "<p>" + data.getInfo()
@@ -273,8 +299,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		// Image pane
 		// create some simple html as a string
 		htmlString = "<html>\n"
-				+ "<head><link rel='stylesheet' href='style.css'>\n"
-				+ "<script src='script.js' type='text/javascript'></script>\n</head>\n"
+				+ "<head>\n</head>\n"
 				+ "<body>\n" + "<table align='center'>\n";
 
 		if (data.getImageLinks() != null) {
@@ -378,11 +403,31 @@ public class OISGUI extends JFrame implements ActionListener {
 	}
 
 	// Get about info from file and put into a panel
-	public JPanel prepareAboutPane() {
+	public void prepareAboutPane() {
 		OISData about = new OISData("about");
-		String aboutInfo = about.getInfo();
-
-		return new JPanel();
+		//String aboutInfo = about.getInfo();
+		JEditorPane tmpEditorPane = new JEditorPane();
+		aboutKit = new HTMLEditorKit();
+		aboutSS = aboutKit.getStyleSheet();
+		aboutSS.addRule("body {font-size: 14px;color:#000; font-family:times; margin: 4px; }");
+		aboutSS.addRule("h2 {color: #D8D8D8; background-color: #00000; }");
+		aboutSS.addRule("div {background-color: #00000; border-style: solid; border-color: #00000;}");
+		aboutDoc = aboutKit.createDefaultDocument();
+		tmpEditorPane.setEditorKit(aboutKit);
+		tmpEditorPane.setDocument(aboutDoc);
+		String aboutStr = "<html>\n"
+				+ "<head>\n</head>\n"
+				+ "<body>\n" + about.getInfo()
+				+ "</p>" + "<br><br>" + "</body>\n</html>";
+		tmpEditorPane.setText(aboutStr);
+		tmpEditorPane.setEditable(false);
+		JScrollPane tmpScrollPane = new JScrollPane(tmpEditorPane);
+		aboutView = new JPanel();
+		aboutView.setLayout(new BorderLayout());
+		aboutButton = new OISButton("BACK");
+		aboutView.add(aboutButton, BorderLayout.SOUTH);
+		aboutView.add(tmpScrollPane, BorderLayout.CENTER);
+		aboutButton.addActionListener(this);
 	}
 
 	// http://stackoverflow.com/questions/10967451/open-a-link-in-browser-with-java-button
