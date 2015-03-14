@@ -26,12 +26,12 @@ public class OISData {
 	// Text file name = organism name + "txt"
 	public OISData(String name){
 		oName = name;
-		readFile(oName + ".txt");
+		readFile("odata/" + oName + ".txt");
 	}
 	
 	// Update content of the class using readFile() & oName - organism name
 	public void update(){
-		readFile(oName + "txt");
+		readFile("odata/" + oName + "txt");
 	}
 	// Read txt file and return a String contains everything thing inside that
 	// file
@@ -51,7 +51,6 @@ public class OISData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// Extract info part from a String that starts with $Info and ends when
