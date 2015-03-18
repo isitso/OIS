@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -184,17 +185,7 @@ public class OISGUI extends JFrame implements ActionListener {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
 				if (isInternetReachable()) {//<<<<<<< HEAD
-					
-					//pass captured image directory to daniel and kiara's method.
-					
-//=======
-					//String result = ???;>>>>>>> master
-					prepareResultView("cat");
-					
-					remove(mainView);
-					add(resultView, BorderLayout.CENTER);
-					validate();
-					repaint();
+					prepareCaptureView();
 				} else {
 					JOptionPane
 							.showMessageDialog(this,
@@ -256,7 +247,18 @@ public class OISGUI extends JFrame implements ActionListener {
 	// 			one to capture current frame and save as image,
 	//			which will be used to recognize
 	public void prepareCaptureView(){
-		
+		EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    MyFrame frame = new MyFrame();
+                    frame.setVisible(true);
+    
+                    
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+            }
+        });
 	}
 	
 	// Info panes: info, images, video, resources

@@ -10,8 +10,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.highgui.Highgui;       
 import org.opencv.objdetect.CascadeClassifier;
 
 public class CatDetection{
@@ -31,7 +30,7 @@ public class CatDetection{
 		  System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		  System.out.println("\nRunning Detection");//TODO only used for testing. should be deleted in final product. 
 		  CascadeClassifier faceDetector = new CascadeClassifier("appdata/haarcascade_frontalcatface_extended.xml");
-		  Mat image = Imgcodecs.imread(filename);
+		  Mat image = Highgui.imread(filename);
 		    
 		  MatOfRect faceDetections = new MatOfRect();
 		  faceDetector.detectMultiScale( image, faceDetections, 1.1, 20, 0, new Size( 30, 30 ), new Size());
@@ -40,7 +39,7 @@ public class CatDetection{
 		  // Draw a bounding box around each face.
 		  for (Rect rect : faceDetections.toArray()) 
 		  {
-			  Imgproc.rectangle(image, 
+			  Core.rectangle(image, 
 					  			new Point(rect.x, rect.y), 
 					  		    new Point(rect.x + rect.width, rect.y + rect.height),
 		                        new Scalar(0, 255, 0));
@@ -60,7 +59,7 @@ public class CatDetection{
 		 {
 		    organismFileName = "appdata/Organism.jpg";
 //			System.out.println(String.format("Writing %s", organismFileName)); //TODO only used for testing. should be deleted in final product. 
-			Imgcodecs.imwrite(organismFileName, image);
+			Highgui.imwrite(organismFileName, image);
 			System.out.println(String.format("Detected %s faces", faceDetections.toArray().length)); //TODO only used for testing. should be deleted in final product. 
 			System.out.println( "The Detector found " + amountDetected + " organisms!"); //TODO only used for testing. should be deleted in final product. 
 		 }
@@ -75,20 +74,20 @@ public class CatDetection{
 	    System.out.println("\nRunning Detection");
 	    CascadeClassifier faceDetector = new CascadeClassifier("LadyBugIdentifier.xml");
 
-	    Mat image = Imgcodecs.imread("Cat64.jpg");
+	    Mat image = Highgui.imread("Cat64.jpg");
 		    
 		MatOfRect faceDetections = new MatOfRect();
 		faceDetector.detectMultiScale( image, faceDetections, 1.1, 80, 0, new Size( 55, 55 ), new Size()); //40-50 is a good minNeighbor
 
 		// Draw a bounding box around each face.
 		for (Rect rect : faceDetections.toArray()) {
-		    	Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),new Scalar(102, 0, 51));
+		    	Core.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),new Scalar(102, 0, 51));
 		}
 		
 		// Save the visualized detection.
 		String filename = "appdata/Organism.jpg";
 		System.out.println(String.format("Writing %s", filename)); //TODO only used for testing. should be deleted in final product. 
-		Imgcodecs.imwrite(filename, image);
+		Highgui.imwrite(filename, image);
 		System.out.println(String.format("Detected %s faces", faceDetections.toArray().length)); //TODO only used for testing. should be deleted in final product. 
 
 	    System.out.println(); //TODO only used for testing. should be deleted in final product. 
