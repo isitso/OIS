@@ -30,6 +30,8 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import org.opencv.core.Core;
+
 
 /*	OISGUI: There will be mainView and resultView
  * 	mainView contains main buttons that let user capture, open image, and about the app
@@ -180,6 +182,7 @@ public class OISGUI extends JFrame implements ActionListener {
 
 	// Handle button click event
 	public void actionPerformed(ActionEvent e) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		try {
 			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 				System.out.println("Hello from button "
@@ -210,7 +213,8 @@ public class OISGUI extends JFrame implements ActionListener {
 					//pass file.getCanonicalPath() to method
 					System.out.println("Selected file path: " + file.getCanonicalPath());
 					
-					CatDetection.organismIdentification(file.getCanonicalPath());
+					
+					OrganismDetection.organismIdentification(file.getCanonicalPath());
 					
 				} else {
 					System.out.println("File selection canceled");
