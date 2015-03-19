@@ -189,6 +189,15 @@ public class OISGUI extends JFrame implements ActionListener {
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
 				if (isInternetReachable()) {//<<<<<<< HEAD
 					prepareCaptureView();
+					String tmp = OrganismDetection.organismIdentification("camera.jpg");
+					System.out.println(tmp);
+					if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){
+						prepareResultView(tmp);
+						remove(mainView);
+						add(resultView, BorderLayout.CENTER);
+						validate();
+						repaint();
+					}
 				} else {
 					JOptionPane
 							.showMessageDialog(this,
@@ -214,8 +223,15 @@ public class OISGUI extends JFrame implements ActionListener {
 					System.out.println("Selected file path: " + file.getCanonicalPath());
 					
 					
-					OrganismDetection.organismIdentification(file.getCanonicalPath());
-					
+					String tmp = OrganismDetection.organismIdentification(file.getCanonicalPath());
+					System.out.println(tmp);
+					if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){
+						prepareResultView(tmp);
+						remove(mainView);
+						add(resultView, BorderLayout.CENTER);
+						validate();
+						repaint();
+					}
 				} else {
 					System.out.println("File selection canceled");
 				}

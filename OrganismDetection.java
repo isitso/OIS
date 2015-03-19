@@ -30,7 +30,7 @@ public class OrganismDetection {
 	static int COUNTER = 1;
 
 	static String IMAGE_DIRECTORY = "C:/Users/Kiara/Desktop/humans";
-	static String FINISHED_DIRECTORY = "appdata/";
+	static String FINISHED_DIRECTORY = "C:/Users/Kiara/workspace/OISKiara/appdata/";
 
 	/*
 	 * This method does the same as the method above except it does not receive
@@ -49,13 +49,13 @@ public class OrganismDetection {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 		CascadeClassifier humanDetector = new CascadeClassifier(
-				"C:/Users/Ryan/workspace/OIS/appdata/humanFace.xml");
+				"C:/Users/Kiara/workspace/OISKiara/appdata/humanFace.xml");
 		CascadeClassifier catDetector = new CascadeClassifier(
-				"C:/Users/Ryan/workspace/OIS/appdata/haarcascade_frontalcatface_extended.xml");
+				"C:/Users/Kiara/workspace/OISKiara/appdata/haarcascade_frontalcatface_extended.xml");
 		CascadeClassifier ladyBugDetector = new CascadeClassifier(
-				"C:/Users/Ryan/workspace/OIS/appdata/LadyBugIdentifier.xml");
+				"C:/Users/Kiara/workspace/OISKiara/appdata/LadyBugIdentifier.xml");
 		CascadeClassifier daisyDetector = new CascadeClassifier(
-				"C:/Users/Ryan/workspace/OIS/appdata/daisies.xml");
+				"C:/Users/Kiara/workspace/OISKiara/appdata/daisies.xml");
 		String organism = "";
 		int numberOfDetections = 0;
 		double biggestArea = 0;
@@ -83,13 +83,12 @@ public class OrganismDetection {
 				+ catDetections.toArray().length
 				+ daisyDetections.toArray().length;
 		
-		
+
 		/*
 		 * if the number of detections is more than one, then the program tries
 		 * to find the detection with the biggest bounding box and assumes that
 		 * it is the biggest.
 		 */
-		System.out.println( numberOfDetections );
 		if(numberOfDetections > 0)
 		{
 			COUNTER++;
@@ -120,7 +119,7 @@ public class OrganismDetection {
 					&& biggestHuman > biggestDaisy) {
 
 				biggestArea = biggestHuman;
-				organism = "human";
+				organism = "Human";
 				Mat editedImage = drawImage(image, humanDetections.toArray(),
 						biggestHuman, organism, destination);
 
@@ -132,7 +131,7 @@ public class OrganismDetection {
 					&& biggestLadyBug > biggestDaisy) {
 
 				biggestArea = biggestLadyBug;
-				organism = "ladybug";
+				organism = "ladyBug";
 				Mat editedImage = drawImage(image, ladyBugDetections.toArray(),
 						biggestLadyBug, organism, destination);
 				Highgui.imwrite(destination, editedImage);
@@ -160,7 +159,7 @@ public class OrganismDetection {
 
 			if (catDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(catDetections.toArray());
-				organism = "cat";
+				organism = "Cat";
 				Mat editedImage = drawImage(image, catDetections.toArray(), biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
@@ -170,7 +169,7 @@ public class OrganismDetection {
 
 			else if (ladyBugDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(ladyBugDetections.toArray());
-				organism = "ladybug";
+				organism = "ladyBug";
 				Mat editedImage = drawImage(image, ladyBugDetections.toArray(), biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
@@ -180,7 +179,7 @@ public class OrganismDetection {
 
 			else if (humanDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(humanDetections.toArray());
-				organism = "human";
+				organism = "Human";
 				Mat editedImage = drawImage(image, humanDetections.toArray(),
 						biggest, organism, destination);
 
