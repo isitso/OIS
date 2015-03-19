@@ -385,13 +385,13 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		String photoName = data.getImageLinks().get(0);
-
+		//String photoName = data.getImageLinks().get(0);
+		String photoName = "appdata/detected1.jpg";
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
 		String htmlString = "<html>\n"
 				+ "<head>\n</head>\n"
-				+ "<body>\n" + "<div align='center'><img src='"
+				+ "<body>\n" + "<div align='center'><img src='file:"
 				+ photoName + "' alt='" + photoName
 				+ "' height='177' width='250'></div>" + "<p>" + data.getInfo()
 				+ "</p>" + "<br><br>" + "</body>\n</html>";
