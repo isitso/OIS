@@ -24,6 +24,7 @@ public class MyFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private static Boolean done;
     
   /**
   * Launch the application.
@@ -36,7 +37,7 @@ public class MyFrame extends JFrame {
     public MyFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(675,650);
-       
+        done = false; 
         
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -52,14 +53,14 @@ public class MyFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent event) {
                 	
-                		Capture takePic = new Capture();
+               		Capture takePic = new Capture();
                     	takePic.CaptureImage();
-                    	
+			done = true;
                     	setVisible(false);
+                    	return;
                     	
-                    	
-                }
-            });
+                }//actionPerformed
+            });//addActionListener
 
         
         
@@ -81,7 +82,10 @@ public class MyFrame extends JFrame {
         	
         g.drawImage(videoCap.getOneFrame(), 0, 0, this);
         
-        } catch (Exception e) {}
+        } 
+	catch (Exception e) {
+		e.printStackTrace();
+	}
     }
  
     class MyThread extends Thread{
@@ -89,9 +93,17 @@ public class MyFrame extends JFrame {
         public void run() {
             for (;;){
                 repaint();
-                try { Thread.sleep(30);
-                } catch (InterruptedException e) {   }
-            }  
-        } 
-    }
+		if( done ){
+			System.out.println( "Variable done is true");
+			return;
+		}//if
+                try { 
+			Thread.sleep(30);
+                } 
+		catch (InterruptedException e) {
+			e.printStackTrace();
+	   	}
+            }//for  
+        }//run 
+    }//My thread
 }

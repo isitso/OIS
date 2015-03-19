@@ -89,6 +89,7 @@ public class OrganismDetection {
 		 * to find the detection with the biggest bounding box and assumes that
 		 * it is the biggest.
 		 */
+		System.out.println( numberOfDetections);
 		if(numberOfDetections > 0)
 		{
 			COUNTER++;
