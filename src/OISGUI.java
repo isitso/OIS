@@ -14,6 +14,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -69,6 +72,8 @@ public class OISGUI extends JFrame implements ActionListener {
 	private final static int CAPTURE_VIEW_BACK_BUTTON_ID = 0;
 	private final static int CAPTURE_VIEW_CAP_BUTTON_ID = 1;
 	private final static int CAPTURE_VIEW_BUTTON_NUMBERS = 2;
+	private MyFrame myFrame;
+	Timer timer;
 	
 	// Result frame's components
 	private final static String[] TABBED_PANE_CAPTION = { "INFO", "IMAGES",
@@ -96,7 +101,8 @@ public class OISGUI extends JFrame implements ActionListener {
 	public static final int VIDEO_TAB_ID = 2;
 	public static final int RESOURCE_TAB_ID = 3;
 	//Image img;
-
+	MyFrame frame;
+	JPanel buttonPane;
 	public OISGUI() {
 		// Create app frame
 		super();
@@ -136,6 +142,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		frame = null;
 	}
 
 	// Generate content of Main Frame
@@ -187,24 +194,15 @@ public class OISGUI extends JFrame implements ActionListener {
 			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
-				if (isInternetReachable()) {//<<<<<<< HEAD
+				
 					prepareCaptureView();
-					String tmp = OrganismDetection.organismIdentification("camera.jpg");
-					System.out.println(tmp);
-					if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){
-						prepareResultView(tmp);
-						remove(mainView);
-						add(resultView, BorderLayout.CENTER);
-						validate();
-						repaint();
-					}
-				} else {
-					JOptionPane
-							.showMessageDialog(this,
-									"Internet Connection Required",
-									"Cannot access internet",
-									JOptionPane.ERROR_MESSAGE);
-				}
+					remove(mainView);
+					add(captureView);
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new RepaintTask(), new Date(), 50);
+					validate();
+					repaint();
+				
 			} else if (e.getSource() == mainButtons[OPEN_BUTTON_ID]) {
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[OPEN_BUTTON_ID]);
@@ -231,6 +229,12 @@ public class OISGUI extends JFrame implements ActionListener {
 						add(resultView, BorderLayout.CENTER);
 						validate();
 						repaint();
+					}else if (tmp.equalsIgnoreCase("error")){
+						JOptionPane
+						.showMessageDialog(this,
+								"No organism detected",
+								"No organism detected",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
 					System.out.println("File selection canceled");
@@ -255,6 +259,67 @@ public class OISGUI extends JFrame implements ActionListener {
 				add(mainView);
 				validate();
 				repaint();
+			} else if (e.getSource() == captureButtons[CAPTURE_VIEW_BACK_BUTTON_ID]){
+				System.out.println("Hello from CAPTURE VIEW's BACK button");
+				remove(captureView);
+				add(mainView);
+				timer.cancel();
+				timer.purge();
+				myFrame.release();
+				validate();
+				repaint();
+			} else if (e.getSource() == captureButtons[CAPTURE_VIEW_CAP_BUTTON_ID]){
+				System.out.println("Hello from CAPTURE VIEW's CAPTURE button");
+				boolean gotNewImage = myFrame.capture("camera.jpg");
+				timer.cancel();
+				timer.purge();
+				myFrame.release();
+				if (isInternetReachable() && gotNewImage) {//<<<<<<< HEAD
+					File tmpFile = new File("camera.jpg");
+					if (tmpFile.exists() ){
+						String tmp = OrganismDetection.organismIdentification("camera.jpg");
+						System.out.println(tmp);
+						if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){
+							prepareResultView(tmp);
+							remove(captureView);
+							add(resultView, BorderLayout.CENTER);
+							validate();
+							repaint();
+						}
+						else if (tmp.equalsIgnoreCase("error")){
+							JOptionPane
+							.showMessageDialog(this,
+									"No organism detected",
+									"No organism detected",
+									JOptionPane.ERROR_MESSAGE);
+							remove(captureView);
+							add(mainView);
+							validate();
+							repaint();
+						}
+					}
+				} else if (!gotNewImage){
+					JOptionPane
+					.showMessageDialog(this,
+							"Something is wrong with camera",
+							"Did not get new photo",
+							JOptionPane.ERROR_MESSAGE);
+					remove(captureView);
+					add(mainView);
+					validate();
+					repaint();
+					
+				}else{
+					JOptionPane
+							.showMessageDialog(this,
+									"Internet Connection Required",
+									"Cannot access internet",
+									JOptionPane.ERROR_MESSAGE);
+					remove(captureView);
+					add(mainView);
+					validate();
+					repaint();
+				}
 			}
 			
 		} catch (Exception err) {
@@ -266,19 +331,38 @@ public class OISGUI extends JFrame implements ActionListener {
 	// 2 buttons: one to go back to the main view (cancel/back),
 	// 			one to capture current frame and save as image,
 	//			which will be used to recognize
+	
 	public void prepareCaptureView(){
+		captureView = new JPanel();
+		captureButtons = new OISButton[CAPTURE_VIEW_BUTTON_NUMBERS];
+
+		buttonPane = new JPanel();
+		buttonPane.setLayout(new GridLayout(1,2));
+		for ( int i = 0; i < CAPTURE_VIEW_BUTTON_NUMBERS; i++){
+			captureButtons[i] = new OISButton(CAPTURE_BUTTONS_TEXT[i]);
+			captureButtons[i].addActionListener(this);
+			buttonPane.add(captureButtons[i]);
+		}
+		myFrame = new MyFrame();
+		myFrame.setPreferredSize(new Dimension(380, 380));
+		captureView.setLayout(new BorderLayout());
+		captureView.add(myFrame, BorderLayout.CENTER);
+		captureView.add(buttonPane, BorderLayout.SOUTH);
+		
+		/*
 		EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    MyFrame frame = new MyFrame();
-                    frame.setVisible(true);
+                	if (frame == null)
+                		frame = new MyFrame();
+                	frame.setVisible(true);
     
                     
                 } catch (Exception e) {
                   e.printStackTrace();
                 }
             }
-        });
+        });*/
 	}
 	
 	// Info panes: info, images, video, resources
@@ -301,13 +385,13 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		String photoName = "odata/" + oName + ".jpg";
+		String photoName = data.getImageLinks().get(0);
 
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
 		String htmlString = "<html>\n"
 				+ "<head>\n</head>\n"
-				+ "<body>\n" + "<div align='center'><img src='file:"
+				+ "<body>\n" + "<div align='center'><img src='"
 				+ photoName + "' alt='" + photoName
 				+ "' height='177' width='250'></div>" + "<p>" + data.getInfo()
 				+ "</p>" + "<br><br>" + "</body>\n</html>";
@@ -489,4 +573,17 @@ public class OISGUI extends JFrame implements ActionListener {
 		return true;
 	}
 
+	class RepaintTask extends TimerTask{
+		public void run(){
+			System.out.println("Reporting from RepaintTask. I'm doing the work");
+			//myFrame.validate();
+			//myFrame.repaint();
+			myFrame.update();
+			//remove(captureView);
+			//captureView.validate();
+			//add(captureView, BorderLayout.CENTER);
+			validate();
+			repaint();
+		}
+	}
 }

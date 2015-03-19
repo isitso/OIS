@@ -1,0 +1,51 @@
+$Info
+#Regular Name
+Lady Beetles, Ladybirds, Lady Bugs
+
+#Scientific Name
+Coccinellidae
+
+#Dangerous
+No
+
+#Description
+Although officially called lady beetles, members of the family Coccinellidae are more commonly known as ladybugs (American) or ladybirds (Great Britain, Australia, Canada). This is the largest of the cucujoid families with nearly 6,000 described species and about 370 genera worldwide. They are among the most familiar and beloved of insects, and are widely recognized for their role in controlling voracious plant pests such as aphids and scale insects. Not surprisingly, in many cultures coccinellid beetles are considered harbingers of good luck and a bountiful harvest. Even the common name, which dates back to medieval times, is a testament of their sacred status as "beetles of Our Lady" (in reference to the virgin Mary).
+
+#Body Length
+0.8 to 18 mm
+
+#Weight
+Unknown
+
+#Elevtion
+0.0 - 998.8 m
+
+#Habitat
+Around the world
+
+#Feeds On
+Acyrthosiphon,
+Aphidoidea,
+Aphidoidea.
+
+#First Apperance
+56.0 million years ago
+
+$Images
+http://media.eol.org/content/2014/01/20/11/64784_orig.jpg
+http://media.eol.org/content/2012/06/12/20/31358_orig.jpg
+http://media.eol.org/content/2012/06/12/20/81899_orig.jpg
+http://media.eol.org/content/2012/06/12/20/76095_orig.jpg
+http://media.eol.org/content/2012/06/12/20/21474_orig.jpg
+http://media.eol.org/content/2012/11/13/02/66039_orig.jpg
+
+$Videos
+https://www.youtube.com/watch?v=YBp3SHp_Mwo
+https://www.youtube.com/watch?v=SwUY7IZNPgA
+https://www.youtube.com/watch?v=VrLRaF6HeMg
+
+
+$Resources
+http://eol.org/pages/327955/overview
+http://en.wikipedia.org/wiki/Human
+https://www.youtube.com/watch?v=YBp3SHp_Mwo

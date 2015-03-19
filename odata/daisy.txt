@@ -1,0 +1,47 @@
+$Info
+#Regular Name
+Daisy
+
+#Scientific Name
+Bellis perennis
+
+#Dangerous
+No
+
+#Description
+Bellis perennis is a common European species of daisy, of the Asteraceae family, often considered the archetypal species of that name. Many related plants also share the name "daisy", so to distinguish this species from other daisies it is sometimes qualified as common daisy, lawn daisy or English daisy. Historically, it has also been commonly known as bruisewort and occasionally woundwort (although the common name woundwort is now more closely associated with Stachys (woundworts)). Bellis perennis is native to western, central and northern Europe, but widely naturalised in most temperate regions including the Americas[2][2][3] and Australasia.
+
+#Body Length
+Unknown
+
+#Weight
+Unknown
+
+#Elevtion
+0.0m - 
+
+#Habitat
+Garden
+
+#Feeds On
+Water, 
+Mineral.
+
+#First Apperance
+Unknown
+
+$Images
+http://media.eol.org/content/2010/03/24/04/51869_orig.jpg
+http://media.eol.org/content/2012/06/13/04/45649_orig.jpg
+http://media.eol.org/content/2012/06/13/04/53382_orig.jpg
+http://media.eol.org/content/2011/10/15/22/52653_orig.jpg
+http://media.eol.org/content/2011/10/15/22/66679_orig.jpg
+
+$Videos
+https://www.youtube.com/watch?v=3m7yffsxXdo
+https://www.youtube.com/watch?v=7j41eBabL0o
+https://www.youtube.com/watch?v=sDdpKql13F4
+
+$Resources
+http://eol.org/pages/467843/overview
+https://en.wikipedia.org/wiki/Bellis_perennis

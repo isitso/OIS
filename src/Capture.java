@@ -20,12 +20,12 @@ public class Capture {
     	else {
     		Mat frame = new Mat();
     		
-    	    while(true){
+    	    /*while(true){
     	    	if (camera.read(frame)){
     	    		Highgui.imwrite("camera.jpg", frame);
     	    		break;
     	    	}
-    	    }	
+    	    }*/	
     	}
     	camera.release();
 	}

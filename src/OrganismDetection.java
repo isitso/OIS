@@ -92,7 +92,7 @@ public class OrganismDetection {
 		System.out.println( numberOfDetections );
 		if(numberOfDetections > 0)
 		{
-			COUNTER++;
+			//COUNTER++;
 		}
 
 		if (numberOfDetections > 1) {
