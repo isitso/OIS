@@ -1,5 +1,7 @@
 
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,13 +24,13 @@ import org.opencv.objdetect.CascadeClassifier;
  make sure the default image in organismIdentification() is the same extension as 
  the captured image. 
  */
-//Putting in a comment so that it will update in GIT Extension
+
 public class OrganismDetection {
 
 	static int COUNTER = 1;
 
-	static String IMAGE_DIRECTORY = "C:/Users/Kiara/Desktop/human";
-	static String FINISHED_DIRECTORY = "appData/";
+	static String IMAGE_DIRECTORY = "C:/Users/Kiara/Desktop/humans";
+	static String FINISHED_DIRECTORY = "C:/Users/Kiara/workspace/OISKiara/appdata/";
 
 	/*
 	 * This method does the same as the method above except it does not receive
@@ -66,10 +68,10 @@ public class OrganismDetection {
 		MatOfRect ladyBugDetections = new MatOfRect();
 		MatOfRect daisyDetections = new MatOfRect();
 
-		ladyBugDetector.detectMultiScale(image, ladyBugDetections, 1.1, 70, 0,new Size(50, 50), new Size());
-		humanDetector.detectMultiScale(image, humanDetections, 1.1, 50, 0, new Size(50, 50), new Size());
-		daisyDetector.detectMultiScale(image, daisyDetections, 1.1, 15, 0, new Size(50, 50), new Size());
-		catDetector.detectMultiScale(image, catDetections, 1.1, 90, 0, new Size(50, 50), new Size());
+		ladyBugDetector.detectMultiScale(image, ladyBugDetections, 1.1, 120, 0,new Size(50, 50), new Size());
+		humanDetector.detectMultiScale(image, humanDetections, 1.1, 20, 0, new Size(30, 30), new Size());
+		daisyDetector.detectMultiScale(image, daisyDetections, 1.1, 20, 0, new Size(50, 50), new Size());
+		catDetector.detectMultiScale(image, catDetections, 1.1, 170, 0, new Size(50, 50), new Size());
 	
 		/*
 		 * get the number of organisms detected and add them together to check
@@ -80,6 +82,7 @@ public class OrganismDetection {
 				+ ladyBugDetections.toArray().length
 				+ catDetections.toArray().length
 				+ daisyDetections.toArray().length;
+		
 
 		/*
 		 * if the number of detections is more than one, then the program tries
@@ -107,8 +110,7 @@ public class OrganismDetection {
 
 				biggestArea = biggestCat;
 				organism = "cat";
-
-				Mat editedImage = drawImage(image, catDetections.toArray(), biggestCat, organism);
+				Mat editedImage = drawImage(image, catDetections.toArray(), biggestCat, organism, destination);
 				Highgui.imwrite(destination, editedImage);
 				return organism;
 			}// if
@@ -117,10 +119,9 @@ public class OrganismDetection {
 					&& biggestHuman > biggestDaisy) {
 
 				biggestArea = biggestHuman;
-				organism = "HummingBird";
-
+				organism = "Human";
 				Mat editedImage = drawImage(image, humanDetections.toArray(),
-						biggestHuman, organism);
+						biggestHuman, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
 				return organism;
@@ -131,9 +132,8 @@ public class OrganismDetection {
 
 				biggestArea = biggestLadyBug;
 				organism = "ladyBug";
-				System.out.println("LADYBUG detector drew something");
 				Mat editedImage = drawImage(image, ladyBugDetections.toArray(),
-						biggestLadyBug, organism);
+						biggestLadyBug, organism, destination);
 				Highgui.imwrite(destination, editedImage);
 				return organism;
 			}// else if
@@ -143,9 +143,8 @@ public class OrganismDetection {
 
 				biggestArea = biggestDaisy;
 				organism = "daisy";
-
-				Mat editedImage = drawImage(image, ladyBugDetections.toArray(),
-						biggestLadyBug, organism);
+				Mat editedImage = drawImage(image, daisyDetections.toArray(),
+						biggestDaisy, organism, destination);
 				Highgui.imwrite(destination, editedImage);
 				return organism;
 			}// else if
@@ -154,13 +153,14 @@ public class OrganismDetection {
 				// of the existing areas, they were all the same size
 				return "";
 			}// else
+			
 		}// if
 		else if (numberOfDetections == 1) {
 
 			if (catDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(catDetections.toArray());
 				organism = "Cat";
-				Mat editedImage = drawImage(image, catDetections.toArray(), biggest, organism);
+				Mat editedImage = drawImage(image, catDetections.toArray(), biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
 				return organism;
@@ -170,7 +170,7 @@ public class OrganismDetection {
 			else if (ladyBugDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(ladyBugDetections.toArray());
 				organism = "ladyBug";
-				Mat editedImage = drawImage(image, ladyBugDetections.toArray(), biggest, organism);
+				Mat editedImage = drawImage(image, ladyBugDetections.toArray(), biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
 				return organism;
@@ -181,7 +181,7 @@ public class OrganismDetection {
 				double biggest = getBiggestArea(humanDetections.toArray());
 				organism = "Human";
 				Mat editedImage = drawImage(image, humanDetections.toArray(),
-						biggest, organism);
+						biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
 				return organism;
@@ -191,32 +191,33 @@ public class OrganismDetection {
 			else if (daisyDetections.toArray().length == 1) {
 				double biggest = getBiggestArea(daisyDetections.toArray());
 				organism = "daisy";
-				Mat editedImage = drawImage(image, humanDetections.toArray(),
-						biggest, organism);
+				Mat editedImage = drawImage(image, daisyDetections.toArray(),
+						biggest, organism, destination);
 
 				Highgui.imwrite(destination, editedImage);
 				return organism;
-
+				
+				
 			}// if
-
 		}// else if
 		/*
 		 * return organism which is "", GUI should return an error since the
 		 * only reason this happens is because there are no organisms detected.
 		 */
 		else {
-			return "";
+			return "error";
 		}// else
 		
-		return "Organism detector worked!";
+		return "error";
 	}// run method
 
 	/*
 	 * Draws a rectangle around the given image and returns the new image
 	 */
-	public static Mat drawImage(Mat image, Rect[] array, double biggest, String organism) {
+	public static Mat drawImage(Mat image, Rect[] array, double biggest, String organism, String name) {
 		//RBG to set the color of the bounding box
 		int r = 0, g = 0, b = 0;
+		
 		
 		//Gives a unique color to each organism picture
 		if(organism.equalsIgnoreCase("human"))
@@ -233,7 +234,6 @@ public class OrganismDetection {
 			r = 255;
 			b = 255;
 		}
-		
 		for (Rect rect : array) {
 			if (rect.area() == biggest) {
 				Core.rectangle(image, new Point(rect.x, rect.y), new Point(
@@ -257,48 +257,5 @@ public class OrganismDetection {
 		}// for
 		return biggestArea;
 	}// biggest area
-	
-	public static void testImages()
-	{
-		File folder = new File(IMAGE_DIRECTORY);
-		File[] listOfFiles = folder.listFiles();
-		ArrayList<File> files = new ArrayList<File>();
-		String filename;
-
-		/*
-		 * Use so that we only need to deal with .jpg files
-		 */
-		for(int index = listOfFiles.length - 1; index >= 0; index--)
-		{
-
-			filename = listOfFiles[index].getName();
-			
-			if(filename.contains(".jpg"))
-			{
-				//Add to the list
-				files.add(listOfFiles[index]);
-			}
-		}
-		
-		String directory;
-
-		//Do detection on images
-		for(File file : files)
-		{
-			try
-			{
-				directory = file.getCanonicalPath();
-				organismIdentification(directory);
-			} catch (IOException error) 
-			{
-				error.printStackTrace();
-			}
-		}
-	}
-	
-	public static void main(String args[])
-	{
-		OrganismDetection.testImages();
-	}
 
 }// OrganismDetection
