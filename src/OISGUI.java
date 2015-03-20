@@ -189,21 +189,25 @@ public class OISGUI extends JFrame implements ActionListener {
 
 	// Handle button click event
 	public void actionPerformed(ActionEvent e) {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);	// Load OpenCV stuff
+		
+		// The Main Controller
 		try {
 			if (e.getSource() == mainButtons[CAPTURE_BUTTON_ID]) {
+				// Capture option, get the capture view 
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[CAPTURE_BUTTON_ID]);
 				
 					prepareCaptureView();
 					remove(mainView);
 					add(captureView);
-					timer = new Timer();
-					timer.scheduleAtFixedRate(new RepaintTask(), new Date(), 50);
+					timer = new Timer();	// Timer helps get current frame of camera  
+					timer.scheduleAtFixedRate(new RepaintTask(), new Date(), 50);	// 50ms will trigger the timer
 					validate();
 					repaint();
 				
 			} else if (e.getSource() == mainButtons[OPEN_BUTTON_ID]) {
+				// Open File option, let user navigate and get image's location
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[OPEN_BUTTON_ID]);
 				// Open File Dialog
@@ -220,16 +224,16 @@ public class OISGUI extends JFrame implements ActionListener {
 					//pass file.getCanonicalPath() to method
 					System.out.println("Selected file path: " + file.getCanonicalPath());
 					
-					
+					// Organism detector 
 					String tmp = OrganismDetection.organismIdentification(file.getCanonicalPath());
 					System.out.println(tmp);
-					if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){
+					if (!tmp.isEmpty() && !tmp.equalsIgnoreCase("error")){	// Found organism
 						prepareResultView(tmp);
 						remove(mainView);
 						add(resultView, BorderLayout.CENTER);
 						validate();
 						repaint();
-					}else if (tmp.equalsIgnoreCase("error")){
+					}else if (tmp.equalsIgnoreCase("error")){	// Some error from organism detector or cannot find one organism
 						JOptionPane
 						.showMessageDialog(this,
 								"No organism detected",
@@ -240,6 +244,7 @@ public class OISGUI extends JFrame implements ActionListener {
 					System.out.println("File selection canceled");
 				}
 			} else if (e.getSource() == mainButtons[ABOUT_BUTTON_ID]) {
+				// About info about us
 				System.out.println("Hello from button "
 						+ MAIN_BUTTON_TEXT[ABOUT_BUTTON_ID]);
 				remove(mainView);
@@ -248,6 +253,7 @@ public class OISGUI extends JFrame implements ActionListener {
 				validate();
 				repaint();
 			} else if (e.getSource() == resultButton) {
+				// do we have this one?
 				System.out.println("Hello from resultView buttotn");
 				remove(resultView);
 				add(mainView);
@@ -336,6 +342,7 @@ public class OISGUI extends JFrame implements ActionListener {
 		captureView = new JPanel();
 		captureButtons = new OISButton[CAPTURE_VIEW_BUTTON_NUMBERS];
 
+		// This will create the buttons
 		buttonPane = new JPanel();
 		buttonPane.setLayout(new GridLayout(1,2));
 		for ( int i = 0; i < CAPTURE_VIEW_BUTTON_NUMBERS; i++){
@@ -343,26 +350,13 @@ public class OISGUI extends JFrame implements ActionListener {
 			captureButtons[i].addActionListener(this);
 			buttonPane.add(captureButtons[i]);
 		}
+		
+		// My Frame is the JLabel, which has background image of current camera frame
 		myFrame = new MyFrame();
 		myFrame.setPreferredSize(new Dimension(380, 380));
 		captureView.setLayout(new BorderLayout());
 		captureView.add(myFrame, BorderLayout.CENTER);
 		captureView.add(buttonPane, BorderLayout.SOUTH);
-		
-		/*
-		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                	if (frame == null)
-                		frame = new MyFrame();
-                	frame.setVisible(true);
-    
-                    
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-            }
-        });*/
 	}
 	
 	// Info panes: info, images, video, resources
@@ -385,7 +379,6 @@ public class OISGUI extends JFrame implements ActionListener {
 		}
 		infoPane.setEditorKit(kits[INFO_TAB_ID]);
 
-		//String photoName = data.getImageLinks().get(0);
 		String photoName = "appdata/detected1.jpg";
 		// Information part to be displayed in 1st tabbed pane
 		// create some simple html as a string
@@ -573,15 +566,11 @@ public class OISGUI extends JFrame implements ActionListener {
 		return true;
 	}
 
+	// Timer helper class that update MyFrame and repaint the whole thing
 	class RepaintTask extends TimerTask{
 		public void run(){
-			System.out.println("Reporting from RepaintTask. I'm doing the work");
-			//myFrame.validate();
-			//myFrame.repaint();
-			myFrame.update();
-			//remove(captureView);
-			//captureView.validate();
-			//add(captureView, BorderLayout.CENTER);
+			//System.out.println("Reporting from RepaintTask. I'm doing the work");
+			myFrame.update();	// This will get the current frame of camera
 			validate();
 			repaint();
 		}
