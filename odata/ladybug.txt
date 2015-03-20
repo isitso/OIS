@@ -33,19 +33,16 @@ Aphidoidea.
 
 $Images
 http://media.eol.org/content/2014/01/20/11/64784_orig.jpg
-http://media.eol.org/content/2012/06/12/20/31358_orig.jpg
-http://media.eol.org/content/2012/06/12/20/81899_orig.jpg
-http://media.eol.org/content/2012/06/12/20/76095_orig.jpg
-http://media.eol.org/content/2012/06/12/20/21474_orig.jpg
-http://media.eol.org/content/2012/11/13/02/66039_orig.jpg
+http://media.eol.org/content/2015/01/26/11/98493_orig.jpg
+http://media.eol.org/content/2009/07/24/08/65132_orig.jpg
+http://media.eol.org/content/2012/12/05/13/21369_orig.jpg
 
 $Videos
-https://www.youtube.com/watch?v=YBp3SHp_Mwo
-https://www.youtube.com/watch?v=SwUY7IZNPgA
-https://www.youtube.com/watch?v=VrLRaF6HeMg
-
+https://www.youtube.com/watch?v=SvHWxDjfFB8
+https://www.youtube.com/watch?v=2ZHQhQoPfKE
+https://www.youtube.com/watch?v=qjhSgMqsAfM
 
 $Resources
-http://eol.org/pages/327955/overview
-http://en.wikipedia.org/wiki/Human
-https://www.youtube.com/watch?v=YBp3SHp_Mwo
+http://eol.org/pages/7459/overview
+http://en.wikipedia.org/wiki/Coccinellidae
+https://www.youtube.com/watch?v=qjhSgMqsAfM
